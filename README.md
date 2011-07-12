@@ -11,7 +11,7 @@ Because.
 What's with the name?
 ---------------------
 
-Beet (heart beet) is a vegetable. It makes sense since we're Spice Apps. Damn I love food...
+Beet (heart beat) is a vegetable. It makes sense since we're Spice Apps. Damn I love food...
 
 Installation:
 -------------
