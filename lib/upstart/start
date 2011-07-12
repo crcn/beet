@@ -1,4 +1,7 @@
 #!/bin/bash
+
+#oh god... what IS this mess!?!? 
+
 BIN=`which $1`
 COMMAND=$2
 NAME=$4
@@ -81,15 +84,13 @@ stop_server()
 	$STOP_BIN_PATH
 }
 
-case "\$1" in
-	start)
-	start_server;
-	;;
-	stop)
-	stop_server;
-	;;
-	*)
-esac
+if [ "\$1" -eq "start" ]
+	then
+	start_server
+elif [ "\$1" -eq "stop" ]
+	then
+	stop_server
+fi
 
 EOF
 )
@@ -115,14 +116,14 @@ UNINSTALL_CONTENT=$(cat <<EOF
 	if [ -a /Library/LaunchDaemons ]
 	then
 		sudo launchctl unload -w $PLIST_PATH
+		sudo launchctl stop $PLIST_NS
+		sudo launchctl remove $PLIST_NS
 	else
-
-		case "\$1" in
-			purge)
-			update-rc.d -f $NAME remove;
-			;;
-			*)
-		esac
+		
+		if [ "\$1" == "purge" ]
+		then	
+			update-rc.d -f $NAME remove
+		fi
 		
 		MONIT_PID="$EXEC ps ax | grep ./$NAME.monit | awk '{print \$1}'$EXEC"
 		echo \$MONIT_PID

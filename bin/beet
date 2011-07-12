@@ -1,0 +1,34 @@
+#!/usr/bin/env node
+
+var beet = require('../lib'),
+	args = process.argv.concat(),
+	ops = {};
+
+args.splice(0,2);
+
+
+while(args.length)
+{
+	var arg = args.shift();
+	
+	switch(arg)
+	{
+		case 'start':
+			beet.start(args.shift());
+		break;
+		case 'stop':
+			beet.stop(args.shift());
+		break;
+		case 'list':
+			beet.list();
+		break;
+		case "load":
+			beet.load();
+		break;
+		case "unload":
+			beet.unload();
+		break;
+	}
+	
+	
+}

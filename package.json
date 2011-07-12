@@ -1,0 +1,20 @@
+{
+    "name":"beet",
+    "descriptions": "Upstart processes and keep them running",
+    "version": "0.0.1",
+    "author": "Craig Condon <craig@spiceapps.com>",
+    "bin": {
+        "slugr": "./bin/beet"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/spiceapps/beet.git"
+    },
+    "main": "./lib/index.js",
+    "dependencies": {
+        "spicekit":"0.0.1",
+        "websocket-client":"1.0.0",
+        "websocket-server":"1.4.04"
+        
+    }
+}
