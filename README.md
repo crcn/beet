@@ -25,7 +25,7 @@ Support:
 - Linux (upstart + monit)
 
 Node.js Usage:
-------
+-------------
 
 make sure you have a package.json in the directory of your node.js app:
 
@@ -39,3 +39,8 @@ list the running processes
 	
 	beet list
 	
+	
+To Do:
+-----
+
+- git hooks
