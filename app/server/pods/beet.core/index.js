@@ -84,7 +84,7 @@ exports.pod = function(m)
 					
 					if(scripts[info.name] || scripts[info.path]) return pull.callback('Script already running.');
 					
-					scripts[info.name] = { path: info.path };
+					scripts[info.name] = info;
 					
 					settings.set('scripts', scripts);
 					
@@ -98,42 +98,51 @@ exports.pod = function(m)
 	
 	function startScript(pull)
 	{
-		var scripts = _scripts(),
-			scriptName = pull.data;
-		
-		for(var sn in scripts)
-		{
-			if(sn == scriptName)
+		getApp({
+			data: pull.data,
+			callback: function(app)
 			{
-				runScript(sn, scripts[sn].path);
-				return pull.callback('success');
+				if(!app) return pull.callback('app does not exist');
+				
+				runScript(app.name, app.path);
+				pull.callback('success');
 			}
-		}
+		});
+	}
+	
+	function restartScript(pull)
+	{
+		console.ok('Trying to restart %s', pull.data);
 		
-		return pull.callback('script doesn\'t exist.');
+		getApp({
+			data: pull.data,
+			callback: function(app)
+			{
+				if(!app) return pull.callback('app does not exist');
+				if(!app.running) return pull.callback('app is not running');
+				
+				startScript(pull);
+			}
+		});
 	}
 	
 	function removeScript(pull)
 	{
-		stopScript(pull);
-		
-		var scriptName = pull.data;
-		
-		console.ok('removing %s', scriptName);
-		
-		
-		var scripts = _scripts();
-		
-		for(var sn in scripts)
-		{
-			if(sn == scriptName)
+		getApp({
+			data: pull.data,
+			callback: function(app)
 			{
-				delete scripts[scriptName];
-				break;
+				if(!app) return pull.callback('App does not exist');
+				console.ok('removing %s', scriptName);
+				
+				stopScript(pull);
+				
+				var sc = _scripts();
+				delete sc[app.name];
+				
+				_scripts(sc);
 			}
-		}
-		
-		_scripts(scripts);
+		});
 	}
 	
 	function stopScript(pull)
@@ -187,14 +196,29 @@ exports.pod = function(m)
 		console.success('Client connected');
 	}
 	
+	function getApp(pull)
+	{
+		var appName = pull.data,
+			scripts = _scripts();
+		
+		
+		for(var scriptName in scripts)
+		{
+			if(scriptName == appName) return pull.callback(scripts[scriptName]);
+		}
+		
+		return pull.callback(null);
+	}
 	
 	
 	m.on({
 		'push init': init,
 		'push glue.connection': onConnection,
 		'pull public beet.add': addScript,
+		'pull public beet.app': getApp,
 		'pull public beet.remove': removeScript,
 		'pull public beet.start': startScript,
+		'pull public beet.restart': restartScript,
 		'pull public beet.stop': stopScript,
 		'pull public beet.list': listScripts
 	});

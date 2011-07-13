@@ -1,5 +1,7 @@
 require('sk/node/log');
 
+var util = require('util');
+
 exports.controller = {
 	load: function(ops)
 	{

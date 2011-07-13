@@ -13,6 +13,14 @@ What's with the name?
 
 Beet (heart beat) is a vegetable. It makes sense since we're Spice Apps. Damn I love food...
 
+Requirments:
+------------
+
+- NPM
+- Git (if using git hooks)
+- Monit (if running Linux)
+- Upstart (if running Linux)
+
 Installation:
 -------------
 
@@ -28,13 +36,13 @@ Support:
 Goodies:
 --------
 
-- *soon* Git integration
+- (soon) Git integration
 	- listen for any commits -> restart app
 	- dispatch commit to any other "glued" beet instances (cluster).
 - Keeps apps running even after the system restarts. 
 - checks health on running apps and restarts any which are non-responsive.
 - Extendable thanks to [brazln](https://github.com/spiceapps/brazln). 
-- *soon* use the beet pods in other [brazln](https://github.com/spiceapps/brazln)-based apps.
+- (soon) use the beet pods in other [brazln](https://github.com/spiceapps/brazln)-based apps.
 
 
 Terminal Usage:
