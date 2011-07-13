@@ -80,7 +80,6 @@ exports.pod = function(m)
 				{
 					var buffer = '';
 					
-					console.log("PAY")
 					req.on('data', function(data)
 					{
 						buffer += data;
