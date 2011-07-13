@@ -88,9 +88,9 @@ Getting there...
 To Do:
 -----
 
-- use the beet pods in other [brazln](https://github.com/spiceapps/brazln)-based apps.
-- dispatch git commits to any other "glued" beet instances (cluster).
-- need to setup http-auth for pushing git commits.
+- Use the beet pods in other [brazln](https://github.com/spiceapps/brazln)-based apps.
+- Dispatch git commits to any other "glued" beet instances (cluster).
+- Need to setup http-auth for pushing git commits.
 - Help file for CLI.
 - Custom client arguments so pods can handle cli args. E.g: setting express.core port.
 - Blah. express.core needs to be able to set own http port.
