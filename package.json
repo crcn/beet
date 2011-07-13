@@ -4,17 +4,26 @@
     "version": "0.0.1",
     "author": "Craig Condon <craig@spiceapps.com>",
     "bin": {
-        "slugr": "./bin/beet"
+        "beet": "./bin/beet"
     },
     "repository": {
         "type": "git",
         "url": "http://github.com/spiceapps/beet.git"
     },
-    "main": "./lib/index.js",
+    "main": "./app/index.js",
     "dependencies": {
         "spicekit":"0.0.1",
         "websocket-client":"1.0.0",
         "websocket-server":"1.4.04"
         
+    },
+    "os": [
+        "linux",
+        "darwin",
+        "freebsd"
+    ],
+    "scripts": {
+        "install": "./bin/beet load",
+        "uninstall": "./bin/beet unload"
     }
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var beet = require('../lib'),
+var beet = require('../app'),
 	args = process.argv.concat(),
 	ops = {};
 
@@ -18,6 +18,12 @@ while(args.length)
 		break;
 		case 'stop':
 			beet.stop(args.shift());
+		break;
+		case 'add':
+			beet.add(args.shift());
+		break;
+		case 'remove':
+			beet.remove(args.shift());
 		break;
 		case 'list':
 			beet.list();
