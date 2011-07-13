@@ -69,7 +69,7 @@ Hooking a git repo:
 
 Terminal:
 
-	beet add git@github.com:spiceapps/beet-test.git; 
+	beet add https://spiceapps@github.com/spiceapps/beet-test.git; 
 	beet start beet-test;
 	
 Next, add your [github post-receive hook](http://help.github.com/post-receive-hooks/):
@@ -84,10 +84,12 @@ Node.js Usage:
 --------------
 
 Getting there...
+
 	
 To Do:
 -----
 
+- Better logging for broken apps.
 - Use the beet pods in other [brazln](https://github.com/spiceapps/brazln)-based apps.
 - Dispatch git commits to any other "glued" beet instances (cluster).
 - Need to setup http-auth for pushing git commits.
