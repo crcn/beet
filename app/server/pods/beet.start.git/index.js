@@ -47,14 +47,19 @@ exports.pod = function(m)
 	{
 		console.ok('Pulling %s', appName);
 		
-		exec('cd '+gitDir(appName)+'; git pull; npm link;', function(err, result)
+		console.log(gitDir(appName));
+		
+		exec('sudo cd '+gitDir(appName)+'; git pull; npm link;', function(err, result)
 		{
-			if(err) return console.error(err);
+			console.log(result);
+			console.log(err);
 			
 			m.pull('beet.restart', appName, function()
 			{
 				
 			})
+			
+			if(err) return console.error(err);
 		});
 	}
 	
