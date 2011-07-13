@@ -92,6 +92,7 @@ Getting there...
 To Do:
 -----
 
+- need to setup http-auth for pushing git commits.
 - Help file for CLI.
 - Custom client arguments so pods can handle cli args. E.g: setting express.core port.
 - Blah. express.core needs to be able to set own http port.
