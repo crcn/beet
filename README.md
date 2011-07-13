@@ -36,9 +36,7 @@ Support:
 Goodies:
 --------
 
-- (soon) Git integration
-	- listen for any commits -> restart app
-	- dispatch commit to any other "glued" beet instances (cluster).
+- (soon) dispatch git commits to any other "glued" beet instances (cluster).
 - Keeps apps running even after the system restarts. 
 - checks health on running apps and restarts any which are non-responsive.
 - Extendable thanks to [brazln](https://github.com/spiceapps/brazln). 
