@@ -1,7 +1,7 @@
 {
     "name":"beet",
     "descriptions": "Upstart processes and keep them running",
-    "version": "0.0.1",
+    "version": "0.0.1-2",
     "author": "Craig Condon <craig@spiceapps.com>",
     "bin": {
         "beet": "./bin/beet"
@@ -12,7 +12,8 @@
     },
     "main": "./app/index.js",
     "dependencies": {
-        "spicekit":"0.0.1",
+        "sk":"*",
+        "brazln":"*",
         "websocket-client":"1.0.0",
         "websocket-server":"1.4.04"
         
