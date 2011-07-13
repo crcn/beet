@@ -1,7 +1,7 @@
 Huh?
 ----
 
-Beet keeps track of child processes (primarily node.js), and makes sure they stay alive. It also has a few hooks so that beet *itself* stays alive, even after the system restarts.
+Beet keeps track of child processes (primarily node.js), and makes sure they stay alive. It also has a few hooks so that beet *itself* stays alive, even after the system restarts. Check out a video demo [here](http://d.pr/OMGe).
 
 Why?
 ----
