@@ -32,11 +32,14 @@ exports.pod = function(m)
 		
 		
 		
-		exec('rm -rf '+gitDir(projectName)+'; mkdir -p '+gitDir()+'; cd '+gitDir()+'; git clone '+repo+'; cd '+projectName+'; npm link;', function(err, result)
+		exec('sudo rm -rf '+gitDir(projectName)+'; mkdir -p '+gitDir()+'; cd '+gitDir()+'; git clone '+repo+'; cd '+projectName+';', function(err, result)
 		{
-			if(err) return callback(err);
-			
-			return callback(false, { path: '/data/beet/git/' + projectName, name: projectName, repo: repo });
+			exec('sudo cd '+ gitDir(projectName)+'; npm link;', function()
+			{
+				if(err) return callback(err);
+
+				return callback(false, { path: '/data/beet/git/' + projectName, name: projectName, repo: repo });
+			})
 		});
 	}
 	

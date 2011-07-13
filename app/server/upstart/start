@@ -157,7 +157,7 @@ install_monit()
 	install_pkg monit
 }
 
-echo "$BIN $COMMAND" > $START_BIN_PATH
+echo "sudo $BIN $COMMAND" > $START_BIN_PATH
 echo "$UNINSTALL_CONTENT" > $STOP_BIN_PATH
 chmod 755 $START_BIN_PATH $STOP_BIN_PATH 
 
