@@ -35,6 +35,11 @@ exports.load = function()
 	});
 }
 
+exports.debug = function()
+{
+	require('./server');
+}
+
 exports.unload = function()
 {
 	require('./server/upstart').stop(function()

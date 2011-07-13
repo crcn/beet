@@ -19,6 +19,9 @@ while(args.length)
 		case 'stop':
 			beet.stop(args.shift());
 		break;
+		case 'debug':
+			beet.debug();
+		break;
 		case 'add':
 			beet.add(args.shift());
 		break;
