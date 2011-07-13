@@ -49,7 +49,7 @@ exports.pod = function(m)
 		
 		console.log(gitDir(appName));
 		
-		exec('sudo cd '+gitDir(appName)+'; git pull; npm link;', function(err, result)
+		exec('sudo git pull; npm link;', { cwd: gitDir(appName) }, function(err, result)
 		{
 			console.log(result);
 			console.log(err);
