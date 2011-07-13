@@ -94,6 +94,6 @@ To Do:
 - Help file for CLI.
 - Custom client arguments so pods can handle cli args. E.g: setting express.core port.
 - Blah. express.core needs to be able to set own http port.
-- Need to debug on Linux.
+- Need to test on other linux distros (currently works on Ubuntu).
 - Ability to call "beet add" without directory (look at CWD)
 - Move config.json from global -> local OR assign beets to "collection" of running apps (yeah... that sounds better). This allows beet to be used in code. 
