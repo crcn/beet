@@ -46,11 +46,11 @@ Goodies:
 
 
 Terminal Usage:
--------------
+---------------
 
 make sure you have a package.json in the directory of your node.js app:
 
-	beet add <process path> 
+	beet add <process path | git repo> 
 	
 Once you've added your app:
 
@@ -71,8 +71,19 @@ list the running apps:
 Hooking a git repo:
 -------------------
 
+1. Terminal:
+
+	beet add https://github.com/spiceapps/beet-test; 
+	beet start beet-test;
 	
-	
+2. Next, add your [github post-receive hook](http://help.github.com/post-receive-hooks/):
+
+	http://my-website.com:59300/git/push/beet-test
+
+
+3. Make changes, commit, and watch the server restart.
+
+
 Node.js Usage:
 --------------
 
@@ -81,8 +92,9 @@ Getting there...
 To Do:
 -----
 
-	
+- Help file for CLI.
+- Custom client arguments so pods can handle cli args. E.g: setting express.core port.
+- Blah. express.core needs to be able to set own http port.
 - Need to debug on Linux.
-- ability to call "beet add" without directory (look at CWD)
-- Ability to add github repos AND listen for commits + restart.
+- Ability to call "beet add" without directory (look at CWD)
 - Move config.json from global -> local OR assign beets to "collection" of running apps (yeah... that sounds better). This allows beet to be used in code. 
