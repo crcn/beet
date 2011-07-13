@@ -22,7 +22,7 @@ exports.pod = function(m, params)
 		});
 		
 		
-		srv.listen((params || {}).port || 59300);
+		srv.listen((params || {}).port || 8730);
 	}
 	
 	
