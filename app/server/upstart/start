@@ -84,10 +84,10 @@ stop_server()
 	$STOP_BIN_PATH
 }
 
-if [ "\$1" -eq "start" ]
+if [ "\$1" == "start" ]
 	then
 	start_server
-elif [ "\$1" -eq "stop" ]
+elif [ "\$1" == "stop" ]
 	then
 	stop_server
 fi
