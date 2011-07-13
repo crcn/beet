@@ -33,8 +33,8 @@ Goodies:
 	- dispatch commit to any other "glued" beet instances (cluster).
 - Keeps apps running even after the system restarts. 
 - checks health on running apps and restarts any which are non-responsive.
-- Extendable thanks to brazln. 
-- *soon* use the beet pods in other brazln-based apps.
+- Extendable thanks to [brazln](https://github.com/spiceapps/brazln). 
+- *soon* use the beet pods in other [brazln](https://github.com/spiceapps/brazln)-based apps.
 
 
 Terminal Usage:
