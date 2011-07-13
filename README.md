@@ -69,7 +69,7 @@ Hooking a git repo:
 
 Terminal:
 
-	beet add https://github.com/spiceapps/beet-test; 
+	beet add git@github.com:spiceapps/beet-test.git; 
 	beet start beet-test;
 	
 Next, add your [github post-receive hook](http://help.github.com/post-receive-hooks/):
