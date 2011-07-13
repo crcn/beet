@@ -46,7 +46,7 @@ Terminal Usage:
 
 make sure you have a package.json in the directory of your node.js app:
 
-	beet add <process path | git repo> 
+	beet add <app path | git repo> 
 	
 Once you've added your app:
 
