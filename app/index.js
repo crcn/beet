@@ -29,7 +29,7 @@ exports.list = function()
 
 exports.load = function()
 {
-	require('./server/upstart').start(__dirname + '/server/index.js', 80, function()
+	require('./server/upstart').start(__dirname + '/server/index.js', 59300, function()
 	{
 		
 	});

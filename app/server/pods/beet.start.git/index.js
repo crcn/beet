@@ -79,7 +79,8 @@ exports.pod = function(m)
 				callback: function(req, res)
 				{
 					var buffer = '';
-
+					
+					console.log("PAY")
 					req.on('data', function(data)
 					{
 						buffer += data;

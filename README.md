@@ -67,17 +67,17 @@ list the running apps:
 Hooking a git repo:
 -------------------
 
-1. Terminal:
+Terminal:
 
 	beet add https://github.com/spiceapps/beet-test; 
 	beet start beet-test;
 	
-2. Next, add your [github post-receive hook](http://help.github.com/post-receive-hooks/):
+Next, add your [github post-receive hook](http://help.github.com/post-receive-hooks/):
 
 	http://my-website.com:59300/git/push/beet-test
 
 
-3. Make changes, commit, and watch the server restart.
+Finally: make changes, commit, and watch the server restart.
 
 
 Node.js Usage:
