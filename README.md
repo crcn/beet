@@ -69,5 +69,6 @@ To Do:
 -----
 
 - Need to debug on Linux.
+- ability to call "beet add" without directory (look at CWD)
 - Ability to add github repos AND listen for commits + restart.
 - Move config.json from global -> local OR assign beets to "collection" of running apps (yeah... that sounds better). This allows beet to be used in code. 
