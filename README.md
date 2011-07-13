@@ -50,7 +50,7 @@ Terminal Usage:
 
 make sure you have a package.json in the directory of your node.js app:
 
-	beet add <process path > 
+	beet add <process path> 
 	
 Once you've added your app:
 
@@ -68,6 +68,11 @@ list the running apps:
 	
 	beet list
 	
+Hooking a git repo:
+-------------------
+
+	
+	
 Node.js Usage:
 --------------
 
@@ -76,6 +81,7 @@ Getting there...
 To Do:
 -----
 
+	
 - Need to debug on Linux.
 - ability to call "beet add" without directory (look at CWD)
 - Ability to add github repos AND listen for commits + restart.

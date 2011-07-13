@@ -30,7 +30,7 @@ exports.pod = function(m)
 		
 		var projectName = repo.split('/').pop().split('.').shift();
 		
-		exec('rm -rf '+gitDir(projectName)+'; mkdir -p '+gitDir()+'; cd '+gitDir()+'; git clone '+repo, function(err, result)
+		exec('rm -rf '+gitDir(projectName)+'; mkdir -p '+gitDir()+'; cd '+gitDir()+'; git clone '+repo+'; cd '+projectName+'; npm link;', function(err, result)
 		{
 			if(err) return callback(err);
 			
@@ -42,7 +42,7 @@ exports.pod = function(m)
 	{
 		console.ok('Pulling %s', appName);
 		
-		exec('cd '+gitDir(appName)+'; git pull;', function(err, result)
+		exec('cd '+gitDir(appName)+'; git pull; npm link;', function(err, result)
 		{
 			if(err) return console.error(err);
 			
