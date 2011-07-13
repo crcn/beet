@@ -36,11 +36,9 @@ Support:
 Goodies:
 --------
 
-- (soon) dispatch git commits to any other "glued" beet instances (cluster).
 - Keeps apps running even after the system restarts. 
 - checks health on running apps and restarts any which are non-responsive.
 - Extendable thanks to [brazln](https://github.com/spiceapps/brazln). 
-- (soon) use the beet pods in other [brazln](https://github.com/spiceapps/brazln)-based apps.
 
 
 Terminal Usage:
@@ -90,6 +88,8 @@ Getting there...
 To Do:
 -----
 
+- use the beet pods in other [brazln](https://github.com/spiceapps/brazln)-based apps.
+- dispatch git commits to any other "glued" beet instances (cluster).
 - need to setup http-auth for pushing git commits.
 - Help file for CLI.
 - Custom client arguments so pods can handle cli args. E.g: setting express.core port.
