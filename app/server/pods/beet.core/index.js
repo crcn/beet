@@ -133,7 +133,7 @@ exports.pod = function(m)
 			callback: function(app)
 			{
 				if(!app) return pull.callback('App does not exist');
-				console.ok('removing %s', scriptName);
+				console.ok('removing %s', app.name);
 				
 				stopScript(pull);
 				
