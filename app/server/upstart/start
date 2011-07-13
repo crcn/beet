@@ -166,6 +166,7 @@ then
 	# save the plist file 
 	echo $LAUNCHCTL_CONTENT > $PLIST_PATH
 	chown root $PLIST_PATH
+	launchctl setenv PATH $PATH
 	launchctl unload -w $PLIST_PATH
 	launchctl load -w $PLIST_PATH
 	launchctl start $PLIST_NS

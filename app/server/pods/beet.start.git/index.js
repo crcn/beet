@@ -30,6 +30,8 @@ exports.pod = function(m)
 		
 		var projectName = repo.split('/').pop().split('.').shift();
 		
+		
+		
 		exec('rm -rf '+gitDir(projectName)+'; mkdir -p '+gitDir()+'; cd '+gitDir()+'; git clone '+repo+'; cd '+projectName+'; npm link;', function(err, result)
 		{
 			if(err) return callback(err);
