@@ -1,5 +1,6 @@
 var Load = require('sk/node/balance').Load,
 	vine = require('vine');
+	
 
 exports.pod = function(m)
 {
@@ -84,9 +85,10 @@ exports.pod = function(m)
 					var scripts = _scripts(),
 						info = data.result();
 					
+					info.name = info.name.toLowerCase();
+					
 					if(scripts[info.name] || scripts[info.path]) return pull.callback(vine.error('%s is already running', info.name));
 					
-					console.log("G")
 					scripts[info.name] = info;
 					
 					settings.set('scripts', scripts);
@@ -145,7 +147,7 @@ exports.pod = function(m)
 				stopScript(pull);
 				
 				var sc = _scripts();
-				delete sc[app.name];
+				delete sc[data.result().name];
 				
 				_scripts(sc);
 				

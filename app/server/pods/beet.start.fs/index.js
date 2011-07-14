@@ -1,6 +1,6 @@
 var fs = require('fs'),
 	vine = require('vine');
-
+	
 function lstat(path)
 {
 	try
