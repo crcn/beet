@@ -1,24 +1,23 @@
 var Load = require('sk/node/balance').Load,
-	vine = require('vine');
-	
+	vine = require('vine'),
+	Structr = require('structr').Structr,
+	Tiny = require('node-tiny');
 
 exports.pod = function(m)
 {
 	var handlers = [],
-		settings,
-		workers = {};
-	
-	function _scripts(v)
+		db,
+		workers = {},
+		ready = false;
+
+	function toggleRunning(app, running, callback)
 	{
-		if(!v)
-		return settings.get('scripts') || {};
-		
-		settings.set('scripts', v);
+		db.update(app, { running: running }, callback || function(){});
 	}
-	
 	function stopWorker(name, callback)
 	{
 		var w = workers[name];
+		
 		if(w)
 		{
 			console.success('Stopping %s', name);
@@ -27,11 +26,11 @@ exports.pod = function(m)
 			
 			delete workers[name];
 			
-			var s = _scripts();
-			s[name].running = false;
-			_scripts(s);
+			toggleRunning(name, false, function()
+			{
+				setTimeout(callback, 500);
+			})
 			
-			setTimeout(callback, 500);
 		}
 		else
 		{
@@ -41,7 +40,8 @@ exports.pod = function(m)
 	
 	function startWorker(name, path)
 	{
-		var w = workers[name] = Load.worker(__dirname + '/worker.js').load({ name: name, path: path })
+		var w = workers[name] = Load.worker(__dirname + '/worker.js').load({ name: name, path: path });
+		
 		console.success('Running: %s', name);
 		
 		w.onError = function(e)
@@ -49,9 +49,7 @@ exports.pod = function(m)
 			console.error(e);
 		}
 		
-		var s = _scripts();
-		s[name].running = true;
-		_scripts(s);
+		toggleRunning(name, true);
 		
 		//start pinging the child and make sure it stays alive 
 		w.keepAlive(function()
@@ -76,24 +74,40 @@ exports.pod = function(m)
 		{
 			var handler = handlers[i];
 			
-			if(handler.test(pull.data))
+			if(handler.test(pull.data || ''))
 			{
 				return handler.load(pull.data, function(data)
 				{
 					if(data.error()) return pull.callback(data);
 					
-					var scripts = _scripts(),
-						info = data.result();
-					
+					var info = data.result();
+						
 					info.name = info.name.toLowerCase();
 					
-					if(scripts[info.name] || scripts[info.path]) return pull.callback(vine.error('%s is already running', info.name));
-					
-					scripts[info.name] = info;
-					
-					settings.set('scripts', scripts);
-					
-					pull.callback(vine.message('Successfully added %s', info.name));
+					db.find({ name: info.name }, function(err, results)
+					{
+						function start()
+						{
+							startScript({ data: info.name, callback: function(){}});
+						}
+						
+						if(results.length)
+						{
+							pull.callback(vine.warning('%s is already running, restarting', info.name));
+							start();
+						}
+						
+						if(typeof pullData == 'object')
+						{
+							info = Structr.copy(info, pullData);
+						}
+						
+						db.set(info.name, info, function(err, ret)
+						{
+							pull.callback(vine.message('Successfully added %s, starting', info.name));
+							start();
+						});
+					});
 				});
 			}
 		}
@@ -112,6 +126,7 @@ exports.pod = function(m)
 				var app = data.result();
 				
 				runScript(app.name, app.path);
+				
 				pull.callback(vine.message('Successfully started %s', app.name));
 			}
 		});
@@ -142,16 +157,16 @@ exports.pod = function(m)
 			{
 				if(data.error()) return pull.callback(data);
 				
-				console.ok('Removing %s', data.result().name);
+				var appName = data.result().name;
+				
+				console.ok('Removing %s', appName);
 				
 				stopScript(pull);
 				
-				var sc = _scripts();
-				delete sc[data.result().name];
-				
-				_scripts(sc);
-				
-				pull.callback(vine.message('Successfully removed %s', data.result().name));
+				db.remove({ name: appName }, function()
+				{
+					pull.callback(vine.message('Successfully removed %s', appName));
+				})
 			}
 		});
 	}
@@ -170,7 +185,17 @@ exports.pod = function(m)
 	
 	function listScripts(pull)
 	{
-		var scripts = _scripts(),
+		db.all(function(err, results)
+		{
+			for(var i = results.length; i--;)
+			{
+				if(!results[i].name) results.splice(i,1);
+			}
+			
+			pull.callback(vine.result(results));
+		});
+		
+		/*var scripts = _scripts(),
 			batch = [];
 	
 		for(var scriptName in scripts)
@@ -180,51 +205,88 @@ exports.pod = function(m)
 			batch.push({ name: scriptName, path: inf.path, running: inf.running });
 		}
 		
-		pull.callback(vine.result(batch));
+		pull.callback(vine.result(batch));*/
 	}
 	
 	
-	function init(s)
+	function init(dbPath)
 	{
-		settings = s;
 		
-		var scripts = _scripts();
-		
-		for(var scriptName in scripts)
+		Tiny(dbPath, function(err, d)
 		{
-			if(scripts[scriptName].running)
-			runScript(scriptName, scripts[scriptName].path);
-		}
-		
-		m.pull('beet.start.handler', function(handler)
-		{
-			handlers.push(handler);
+			db = d;
+			
+			ready = true;
+			
+			m.push('beet.ready', true);
+			
+			
+			d.all(function(err, results)
+			{
+				results.forEach(function(app)
+				{
+					if(app.running) runScript(app.name, app.path);
+				})
+			});
+			
+			
+			m.pull('beet.start.handler', function(handler)
+			{
+				handlers.push(handler);
+			});
 		});
+		
 	}
 	
-	function onConnection()
+	function onConnection(connection)
 	{
 		console.success('Client connected');
+		connection.push('beet.ready');
 	}
 	
 	function getApp(pull)
 	{
-		var appName = pull.data,
-			scripts = _scripts();
+		var s = pull.data,
+		search;
 		
+		if(typeof s == 'string')
+		{
+			search = { name: s };
+		}
+		else
+		if(s)
+		{
+			search = { name: s, $in : { 'tags': s.tags || [] }};
+		}
+		else
+		return pull.callback(vine.error('app name not present'));
+		
+		db.find(search, function(err, results)
+		{
+			if(!results.length) return pull.callback(vine.error('%s does not exist', search.name));
+			pull.callback(vine.result(results[0]));
+		});
+		
+		/*var appName = pull.data,
+			scripts = _scripts();
 		
 		for(var scriptName in scripts)
 		{
 			if(scriptName == appName) return pull.callback(vine.result(scripts[scriptName]));
-		}
+		}*/
 		
-		return pull.callback(vine.error('%s does not exist', appName));
+	}
+	
+	function isBeetReady(pull)
+	{
+		pull.callback(ready);
 	}
 	
 	
 	m.on({
 		'push init': init,
 		'push glue.connection': onConnection,
+		'pull public beet.ready': isBeetReady,
 		'pull public beet.add': addScript,
 		'pull public beet.app': getApp,
 		'pull public beet.remove': removeScript,

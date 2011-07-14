@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var beet = require('../app'),
+var beet = require('../app/console'),
 	args = process.argv.concat(),
 	ops = {};
 

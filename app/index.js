@@ -1,49 +1,18 @@
-require('sk/node/log');
+var brazln = require('brazln');
 
-
-exports.start = function(name)
+var _pull = function(type)
 {
-	require('./client').start(name);
-}
-
-exports.stop = function(name)
-{
-	require('./client').stop(name);
-}
-
-exports.add = function(path)
-{
-	require('./client').add(path);
-}
-
-exports.remove = function(name)
-{
-	require('./client').remove(name);
-}
-
-
-exports.list = function()
-{
-	require('./client').list();
-}
-
-exports.load = function()
-{
-	require('./server/upstart').start(__dirname + '/server/index.js', 8730, function()
+	return function(data, callback)
 	{
-		
-	});
+		brazln.mediator.pull(type, data, function()
+		{
+			callback.apply(null, arguments);
+		});
+	};
 }
 
-exports.debug = function()
-{
-	require('./server');
-}
-
-exports.unload = function()
-{
-	require('./server/upstart').stop(function()
-	{
-		
-	});
-}
+exports.add = _pull('beet.add');
+exports.remove = _pull('beet.remove');
+exports.start = _pull('beet.start');
+exports.stop = _pull('beet.stop');
+exports.list = _pull('beet.list');

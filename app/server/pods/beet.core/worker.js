@@ -1,6 +1,7 @@
 require('sk/node/log');
 
-var util = require('util');
+var util = require('util'),
+	fs = require('fs');
 
 exports.controller = {
 	load: function(ops)
@@ -22,7 +23,8 @@ exports.controller = {
 			oldConsole.apply(null, arguments);
 		}
 		
+		var pkg = JSON.parse(fs.readFileSync(ops.path + '/package.json'));
 		
-		require(ops.path);
+		require(ops.path + '/' + pkg.main);
 	}
 }

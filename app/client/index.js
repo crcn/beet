@@ -1,6 +1,7 @@
 var brazln = require('brazln'),
 	Queue = require('sk/core/queue').Queue,
-	q = new Queue(true);
+	q = new Queue(true),
+	beet = require('../index');
 	
 
 var m = brazln.require(['glue.core','glue.http']);
@@ -18,20 +19,7 @@ m.on({
 });
 
 //need to wait until established with server
-var _q = function(callback)
-{
-	return function()
-	{
-		var args = arguments;
-		
-		q.add(function()
-		{
-			callback.apply(null, args);
-		});
-	}
-}
-
-var _pull = function(type, callback)
+var _q = function(org, callback)
 {
 	if(!callback)
 	{
@@ -53,26 +41,30 @@ var _pull = function(type, callback)
 		}
 	}
 	
-	return _q(function(data)
+	return function()
 	{
-		m.pull(type, data, function()
+		var args = arguments;
+		
+		q.add(function()
 		{
-			callback.apply(null, arguments);
-			process.exit();
+			org(args[0], function(msg)
+			{
+				callback(msg);
+				process.exit();
+			});
 		});
-	});
+	}
 }
 
 
-exports.start = _pull('beet.start');
-exports.stop = _pull('beet.stop');
-exports.add = _pull('beet.add');
-exports.remove = _pull('beet.remove');
+exports.start = _q(beet.start);
+exports.stop = _q(beet.stop);
+exports.add = _q(beet.add);
+exports.remove = _q(beet.remove);
 
 
-exports.list = _pull('beet.list', function(scripts)
+exports.list = _q(beet.list, function(scripts)
 {	
-	
 	scripts.result.forEach(function(script)
 	{
 		console.log('%s: %s', script.name.blue, script.running ? 'running'.green : 'stopped'.red );

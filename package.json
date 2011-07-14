@@ -16,6 +16,7 @@
         "brazln":"*",
         "express":"*",
         "vine":"*",
+        "node-tiny":"*",
         "websocket-client":"1.0.0",
         "websocket-server":"1.4.04"
         
