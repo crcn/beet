@@ -1,4 +1,5 @@
-var Load = require('sk/node/balance').Load;
+var Load = require('sk/node/balance').Load,
+	vine = require('vine');
 
 exports.pod = function(m)
 {
@@ -76,36 +77,40 @@ exports.pod = function(m)
 			
 			if(handler.test(pull.data))
 			{
-				return handler.load(pull.data, function(err, info)
+				return handler.load(pull.data, function(data)
 				{
-					if(err) return pull.callback(err);
+					if(data.error()) return pull.callback(data);
 					
-					var scripts = _scripts();
+					var scripts = _scripts(),
+						info = data.result();
 					
-					if(scripts[info.name] || scripts[info.path]) return pull.callback('Script already running.');
+					if(scripts[info.name] || scripts[info.path]) return pull.callback(vine.error('%s is already running', info.name));
 					
+					console.log("G")
 					scripts[info.name] = info;
 					
 					settings.set('scripts', scripts);
 					
-					pull.callback('Successfuly started script.');
+					pull.callback(vine.message('Successfully added %s', info.name));
 				});
 			}
 		}
 		
-		pull.callback('unable to parse');
+		pull.callback(vine.error('unable to parse'));
 	}
 	
 	function startScript(pull)
 	{
 		getApp({
 			data: pull.data,
-			callback: function(app)
+			callback: function(data)
 			{
-				if(!app) return pull.callback('app does not exist');
+				if(data.error()) return pull.callback(data);
+				
+				var app = data.result();
 				
 				runScript(app.name, app.path);
-				pull.callback('success');
+				pull.callback(vine.message('Successfully started %s', app.name));
 			}
 		});
 	}
@@ -116,10 +121,11 @@ exports.pod = function(m)
 		
 		getApp({
 			data: pull.data,
-			callback: function(app)
+			callback: function(data)
 			{
-				if(!app) return pull.callback('app does not exist');
-				if(!app.running) return pull.callback('app is not running');
+				if(data.error()) return pull.callback(result);
+				
+				if(data.result().running) return pull.callback(vine.error('%s is not running', data.result().name));
 				
 				startScript(pull);
 			}
@@ -130,10 +136,11 @@ exports.pod = function(m)
 	{
 		getApp({
 			data: pull.data,
-			callback: function(app)
+			callback: function(data)
 			{
-				if(!app) return pull.callback('App does not exist');
-				console.ok('removing %s', app.name);
+				if(data.error()) return pull.callback(data);
+				
+				console.ok('Removing %s', data.result().name);
 				
 				stopScript(pull);
 				
@@ -141,6 +148,8 @@ exports.pod = function(m)
 				delete sc[app.name];
 				
 				_scripts(sc);
+				
+				pull.callback(vine.message('Successfully removed %s', data.result().name));
 			}
 		});
 	}
@@ -153,7 +162,7 @@ exports.pod = function(m)
 		
 		stopWorker(scriptName, function()
 		{
-			pull.callback('Stopped');
+			pull.callback(vine.message('Stopped %s', scriptName));
 		})
 	}
 	
@@ -169,7 +178,7 @@ exports.pod = function(m)
 			batch.push({ name: scriptName, path: inf.path, running: inf.running });
 		}
 		
-		pull.callback(batch);
+		pull.callback(vine.result(batch));
 	}
 	
 	
@@ -204,10 +213,10 @@ exports.pod = function(m)
 		
 		for(var scriptName in scripts)
 		{
-			if(scriptName == appName) return pull.callback(scripts[scriptName]);
+			if(scriptName == appName) return pull.callback(vine.result(scripts[scriptName]));
 		}
 		
-		return pull.callback(null);
+		return pull.callback(vine.error('%s does not exist', appName));
 	}
 	
 	

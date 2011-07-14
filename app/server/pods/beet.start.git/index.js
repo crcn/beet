@@ -1,6 +1,7 @@
 var qs = require('querystring'),
 	exec = require('child_process').exec,
-	fs= require('fs');
+	fs= require('fs'),
+	vine = require('vine');
 
 
 
@@ -19,26 +20,32 @@ exports.pod = function(m)
 		//http? check to make sure a password is present- bash will ask for one.
 		if(repo.indexOf('://') > -1)
 		{
-			var u = repo.split('@').shift();
+			var bauth = repo.split('@');
+			var u = bauth.shift();
 			
-			//blank? add a blank password :3
+			if(!bauth.length)
+			{
+				repo = repo.replace('://','://u:p@')
+			}
+			else
 			if(u.search(/\w+:\w+/) == -1)
 			{
-				repo = repo.replace(u, u + ':pw');
+				repo = repo.replace(u, u + ':p');
 			}
 		}
 		
 		var projectName = repo.split('/').pop().split('.').shift();
 		
+		console.log(repo)
 		
 		
 		exec('sudo rm -rf '+gitDir(projectName)+'; mkdir -p '+gitDir()+'; cd '+gitDir()+'; git clone '+repo+'; cd '+projectName+';', function(err, result)
 		{
 			exec('sudo cd '+ gitDir(projectName)+'; npm link;', function()
 			{
-				if(err) return callback(err);
-
-				return callback(false, { path: '/data/beet/git/' + projectName, name: projectName, repo: repo });
+				if(err) return callback(vine.error(err));
+				
+				return callback(vine.result({ path: '/data/beet/git/' + projectName, name: projectName, repo: repo }));
 			})
 		});
 	}

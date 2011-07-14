@@ -37,7 +37,19 @@ var _pull = function(type, callback)
 	{
 		callback = function(msg)
 		{
-			console.log(msg);
+			if(msg.errors)
+			{
+				msg.errors.forEach(function(err)
+				{
+					console.error(err.message);
+				})
+			}
+			else
+			if(msg.message)
+			{
+				console.success(msg.message);
+			}
+			
 		}
 	}
 	
@@ -60,9 +72,10 @@ exports.remove = _pull('beet.remove');
 
 exports.list = _pull('beet.list', function(scripts)
 {	
-	scripts.forEach(function(script)
+	
+	scripts.result.forEach(function(script)
 	{
-		console.log('%s: %s', script.name, script.running ? 'running'.green : 'stopped'.red );
+		console.log('%s: %s', script.name.blue, script.running ? 'running'.green : 'stopped'.red );
 	})
 });
 

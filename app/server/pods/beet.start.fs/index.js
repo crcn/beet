@@ -1,4 +1,5 @@
-var fs = require('fs');
+var fs = require('fs'),
+	vine = require('vine');
 
 function lstat(path)
 {
@@ -37,16 +38,16 @@ exports.pod = function(m)
 							//abs path to the script
 							pkg.main = fs.realpathSync(script + '/' + pkg.main);
 							
-						callback(false, { name: pkg.name, path: script });
+						callback(vine.result({ name: pkg.name, path: script }));
 					}
 					else
 					{
-						callback('A package.json file must be present.');
+						callback(vine.error('A package.json file must be present.'));
 					}
 					return;
 				}
 				
-				return callback('The script must be a directory');
+				return callback(vine.error('The script must be a directory'));
 			}
 		}
 		
