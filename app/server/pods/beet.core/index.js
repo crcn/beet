@@ -1,7 +1,8 @@
 var Load = require('sk/node/balance').Load,
 	vine = require('vine'),
 	Structr = require('structr').Structr,
-	Tiny = require('node-tiny');
+	Tiny = require('node-tiny'),
+	Queue = require('sk/core/queue').Queue;
 
 exports.pod = function(m)
 {
@@ -24,14 +25,18 @@ exports.pod = function(m)
 		{
 			console.success('Stopping %s', appName);
 			
-			w.terminate(1);
-			
-			delete workers[appName];
-			
-			toggleRunning(appName, false, function()
+			w.exit(function()
 			{
-				setTimeout(callback, 500);
-			})
+				w.terminate(1);
+
+				delete workers[appName];
+
+				toggleRunning(appName, false, function()
+				{
+					setTimeout(callback, 500);
+				});
+			});
+			
 			
 		}
 		else
@@ -88,49 +93,67 @@ exports.pod = function(m)
 			toAdd = { path: pullData.path || '', name: pullData.name, args: pullData.args };
 		}
 		
-		for(var i = handlers.length; i--;)
+		
+		function load(handler)
 		{
-			var handler = handlers[i];
-			
-			if(handler.test(toAdd.path))
+			handler.load(toAdd.path, function(data)
 			{
-				return handler.load(toAdd.path, function(data)
+				if(data.error()) return pull.callback(data);
+				
+				var info = data.result();
+					
+				info.name = (toAdd.name || info.name).toLowerCase();
+				
+				db.find({ name: info.name }, function(err, results)
 				{
-					if(data.error()) return pull.callback(data);
-					
-					var info = data.result();
-						
-					info.name = (toAdd.name || info.name).toLowerCase();
-					
-					db.find({ name: info.name }, function(err, results)
+					function start()
 					{
-						function start()
-						{
-							startScript({ data: info.name, callback: function(){}});
-						}
-						
-						if(results.length)
-						{
-							pull.callback(vine.warning('%s is already running, restarting', info.name));
-							start();
-						}
-						
-						if(typeof pullData == 'object')
-						{
-							info = Structr.copy(info, pullData);
-						}
-												
-						db.set(info.name, info, function(err, ret)
-						{ 
-							pull.callback(vine.message('Successfully added %s, starting', info.name));
-							start();
-						});
+						startScript({ data: info.name, callback: function(){}});
+					}
+					
+					if(results.length)
+					{
+						pull.callback(vine.warning('%s is already running, restarting', info.name));
+						start();
+					}
+					
+					if(typeof pullData == 'object')
+					{
+						info = Structr.copy(info, pullData);
+					}
+											
+					db.set(info.name, info, function(err, ret)
+					{ 
+						pull.callback(vine.message('Successfully added %s, starting', info.name));
+						start();
 					});
 				});
-			}
+			});
 		}
 		
-		pull.callback(vine.error('unable to parse'));
+		var q = new Queue(true);
+		
+		handlers.forEach(function(handler)
+		{
+			q.add(function()
+			{	
+				handler.test(toAdd.path, function(success)
+				{
+					if(success)
+					{
+						load(handler)
+						return q.stop();
+					}
+					
+					q.next();
+				})
+			})
+		});
+		
+		q.add(function()
+		{
+			pull.callback(vine.error('unable to parse'));
+		})
 	}
 	
 	function startScript(pull)

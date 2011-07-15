@@ -1,8 +1,9 @@
 require('sk/node/log');
 
 var util = require('util'),
-	fs = require('fs');
-
+	fs = require('fs'),
+	brazln = require('brazln');
+	
 exports.controller = {
 	load: function(ops)
 	{
@@ -12,7 +13,8 @@ exports.controller = {
 			path = ops.path,
 			pkg = JSON.parse(fs.readFileSync(ops.path + '/package.json')),
 			args = ops.args || [];
-			args = args.length ? args : (pkg.slug ? pkg.slug.args || [] : []);
+			args = args.length ? args : (pkg.slug ? pkg.slug.args || [] : []),
+			exitHandlers = [];
 		
 		process.chdir(ops.path);
 				
@@ -33,7 +35,31 @@ exports.controller = {
 		}
 		
 		
+		brazln.mediator.on({
+			'private beet.app.ops': function(pull)
+			{
+				pull.callback(ops);
+			},
+			'push init': function()
+			{
+				brazln.mediator.push('add.exit.handler', exitHandlers);
+			}
+		});
+		
 		
 		require(path + '/' + pkg.main);
+	},
+	exit: function(data, callback)
+	{
+		var i = exitHandlers.length;
+		
+		
+		exitHandlers.forEach(function(handler)
+		{
+			handler.exit(function()
+			{
+				if(!(--i)) callback();
+			});
+		});
 	}
 }

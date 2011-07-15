@@ -18,9 +18,9 @@ exports.pod = function(m)
 	function getStartHandler(pull)
 	{
 		var handler = {
-			test: function(script)
+			test: function(script, callback)
 			{
-				return lstat(script);//false if doesn't exist on the fs.
+				callback(lstat(script));//false if doesn't exist on the fs.
 			},
 			load: function(script, callback)
 			{

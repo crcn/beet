@@ -36,8 +36,6 @@ exports.pod = function(m)
 		
 		var projectName = repo.split('/').pop().split('.').shift();
 		
-		console.log(repo)
-		
 		
 		exec('sudo rm -rf '+gitDir(projectName)+'; mkdir -p '+gitDir()+'; cd '+gitDir()+'; git clone '+repo+'; cd '+projectName+';', function(err, result)
 		{
@@ -73,9 +71,9 @@ exports.pod = function(m)
 	function getStartHandler(pull)
 	{
 		var handler = {
-			test: function(value)
+			test: function(value, callback)
 			{
-				return value.indexOf('.git') > -1;
+				callback(value.indexOf('.git') > -1);
 			},
 			load: function(value, callback)
 			{
