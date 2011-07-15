@@ -14,19 +14,21 @@ exports.pod = function(m)
 	{
 		db.update(app, { running: running }, callback || function(){});
 	}
-	function stopWorker(name, callback)
+	
+	function stopWorker(appName, callback)
 	{
-		var w = workers[name];
+		var w = workers[appName];
+		
 		
 		if(w)
 		{
-			console.success('Stopping %s', name);
+			console.success('Stopping %s', appName);
 			
-			w.terminate();
+			w.terminate(1);
 			
-			delete workers[name];
+			delete workers[appName];
 			
-			toggleRunning(name, false, function()
+			toggleRunning(appName, false, function()
 			{
 				setTimeout(callback, 500);
 			})
@@ -38,51 +40,67 @@ exports.pod = function(m)
 		}
 	}
 	
-	function startWorker(name, path)
+	function startWorker(app)
 	{
-		var w = workers[name] = Load.worker(__dirname + '/worker.js').load({ name: name, path: path });
+		var w = workers[app.name] = Load.worker(__dirname + '/worker.js').load(app);
 		
-		console.success('Running: %s', name);
+		console.success('Running: %s', app.name);
 		
 		w.onError = function(e)
 		{
 			console.error(e);
 		}
 		
-		toggleRunning(name, true);
+		toggleRunning(app.name, true);
 		
 		//start pinging the child and make sure it stays alive 
+		if(false)
 		w.keepAlive(function()
 		{
-			delete workers[name];
+			console.warning('Looks like worker has crashed, restarting.');
 			
-			startWorker(name, path);
+			delete workers[app.name];
+			
+			runScript(app);
 		});
 	}
 	
-	function runScript(name, path)
+	function runScript(app)
 	{
-		stopWorker(name, function()
+		
+		stopWorker(app.name, function()
 		{
-			startWorker(name, path);
+			startWorker(app);
 		});
 	}
 	
 	function addScript(pull)
 	{
+		var pullData = pull.data,
+			toAdd = {};
+		
+		if(typeof pullData == 'string')
+		{
+			toAdd.path = pullData;
+		}
+		else
+		{
+			toAdd = { path: pullData.path || '', name: pullData.name, args: pullData.args };
+		}
+		
 		for(var i = handlers.length; i--;)
 		{
 			var handler = handlers[i];
 			
-			if(handler.test(pull.data || ''))
+			if(handler.test(toAdd.path))
 			{
-				return handler.load(pull.data, function(data)
+				return handler.load(toAdd.path, function(data)
 				{
 					if(data.error()) return pull.callback(data);
 					
 					var info = data.result();
 						
-					info.name = info.name.toLowerCase();
+					info.name = (toAdd.name || info.name).toLowerCase();
 					
 					db.find({ name: info.name }, function(err, results)
 					{
@@ -101,9 +119,9 @@ exports.pod = function(m)
 						{
 							info = Structr.copy(info, pullData);
 						}
-						
+												
 						db.set(info.name, info, function(err, ret)
-						{
+						{ 
 							pull.callback(vine.message('Successfully added %s, starting', info.name));
 							start();
 						});
@@ -125,7 +143,7 @@ exports.pod = function(m)
 				
 				var app = data.result();
 				
-				runScript(app.name, app.path);
+				runScript(app);
 				
 				pull.callback(vine.message('Successfully started %s', app.name));
 			}
@@ -163,7 +181,7 @@ exports.pod = function(m)
 				
 				stopScript(pull);
 				
-				db.remove({ name: appName }, function()
+				db.remove(appName, function()
 				{
 					pull.callback(vine.message('Successfully removed %s', appName));
 				})
@@ -214,6 +232,8 @@ exports.pod = function(m)
 		
 		Tiny(dbPath, function(err, d)
 		{
+			if(err) return console.error(err.stack);
+			
 			db = d;
 			
 			ready = true;
@@ -225,7 +245,7 @@ exports.pod = function(m)
 			{
 				results.forEach(function(app)
 				{
-					if(app.running) runScript(app.name, app.path);
+					if(app.running) runScript(app);
 				})
 			});
 			
@@ -249,6 +269,7 @@ exports.pod = function(m)
 		var s = pull.data,
 		search;
 		
+		
 		if(typeof s == 'string')
 		{
 			search = { name: s };
@@ -256,7 +277,7 @@ exports.pod = function(m)
 		else
 		if(s)
 		{
-			search = { name: s, $in : { 'tags': s.tags || [] }};
+			search = { name: s.name, $in : { 'tags': s.tags || [] }};
 		}
 		else
 		return pull.callback(vine.error('app name not present'));

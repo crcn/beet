@@ -35,8 +35,14 @@ exports.pod = function(m)
 					{
 						var pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
 
-							//abs path to the script
-							pkg.main = fs.realpathSync(script + '/' + pkg.main);
+							try
+							{
+								//abs path to the script
+								pkg.main = fs.realpathSync(script + '/' + pkg.main);
+							}catch(e)
+							{
+								return vine.error('Unable to start %s', pkg.name);
+							}
 							
 						callback(vine.result({ name: pkg.name, path: script }));
 					}

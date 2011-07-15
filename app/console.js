@@ -1,9 +1,21 @@
 require('sk/node/log');
 
-
-exports.start = function(name)
+exports.handle = function(ops)
 {
-	require('./client').start(name);
+	if(ops.start)
+	{
+		exports.start(ops.start, ops.args || []);
+	}
+	else
+	if(ops.add)
+	{
+		exports.add(ops.add, ops.name, ops.args || []);
+	}
+}
+
+exports.start = function(name, args)
+{
+	require('./client').start({ name: name, args: args });
 }
 
 exports.stop = function(name)
@@ -11,9 +23,9 @@ exports.stop = function(name)
 	require('./client').stop(name);
 }
 
-exports.add = function(path)
+exports.add = function(path, name, args)
 {
-	require('./client').add(path);
+	require('./client').add({ path: path, name: name, args: args });
 }
 
 exports.remove = function(name)

@@ -6,8 +6,17 @@ var util = require('util'),
 exports.controller = {
 	load: function(ops)
 	{
+		
 		var oldConsole = console.log,
-			appName = ops.name;
+			appName = ops.name,
+			path = ops.path,
+			pkg = JSON.parse(fs.readFileSync(ops.path + '/package.json')),
+			args = ops.args || [];
+			args = args.length ? args : (pkg.slug ? pkg.slug.args || [] : []);
+		
+		process.chdir(ops.path);
+				
+		process.argv = process.argv.splice(0,2).concat(args);
 		
 		console.log = function()
 		{
@@ -23,8 +32,8 @@ exports.controller = {
 			oldConsole.apply(null, arguments);
 		}
 		
-		var pkg = JSON.parse(fs.readFileSync(ops.path + '/package.json'));
 		
-		require(ops.path + '/' + pkg.main);
+		
+		require(path + '/' + pkg.main);
 	}
 }

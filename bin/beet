@@ -14,22 +14,30 @@ while(args.length)
 	switch(arg)
 	{
 		case 'start':
-			beet.start(args.shift());
-		break;
-		case 'stop':
-			beet.stop(args.shift());
-		break;
-		case 'debug':
-			beet.debug();
+			ops.start = args.shift();
 		break;
 		case 'add':
-			beet.add(args.shift());
+			ops.add = args.shift();
+		break;
+		case 'name':
+			ops.name = args.shift();
+		break;
+		case 'args':
+			ops.args = args.concat();
+			args = [];
+		break;
+		
+		case 'stop':
+			beet.stop(args.shift());
 		break;
 		case 'remove':
 			beet.remove(args.shift());
 		break;
 		case 'list':
 			beet.list();
+		break;
+		case 'debug':
+			beet.debug();
 		break;
 		case "load":
 			beet.load();
@@ -38,6 +46,6 @@ while(args.length)
 			beet.unload();
 		break;
 	}
-	
-	
 }
+
+beet.handle(ops);
