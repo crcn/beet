@@ -53,6 +53,7 @@ exports.controller = {
 	{
 		var i = exitHandlers.length;
 		
+		if(!i) return callback();
 		
 		exitHandlers.forEach(function(handler)
 		{
