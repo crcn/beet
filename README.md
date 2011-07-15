@@ -1,7 +1,7 @@
 Huh?
 ----
 
-Beet keeps track of child processes (primarily node.js), and makes sure they stay alive. It also has a few hooks so that beet *itself* stays alive, even after the system restarts. Check out a video demo [here](http://d.pr/OMGe).
+Beet keeps track of child processes, and makes sure they stay alive. It also has a few hooks so that beet *itself* stays alive, even after the system restarts. Check out a video demo [here](http://d.pr/OMGe).
 
 Why?
 ----
@@ -46,7 +46,7 @@ Terminal Usage:
 
 make sure you have a package.json in the directory of your node.js app:
 
-	beet add <app path | git repo> 
+	beet add <app path | git repo> name <app name (optional)> args <args to pass to app (optional)>
 	
 Once you've added your app:
 
@@ -94,8 +94,6 @@ To Do:
 - Dispatch git commits to any other "glued" beet instances (cluster).
 - Need to setup http-auth for pushing git commits.
 - Help file for CLI.
-- Custom client arguments so pods can handle cli args. E.g: setting express.core port.
 - Blah. express.core needs to be able to set own http port.
 - Need to test on other linux distros (currently works on Ubuntu).
 - Ability to call "beet add" without directory (look at CWD)
-- Move config.json from global -> local OR assign beets to "collection" of running apps (yeah... that sounds better). This allows beet to be used in code. 
