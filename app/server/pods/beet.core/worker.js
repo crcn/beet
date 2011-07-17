@@ -19,6 +19,8 @@ function readFileSync(path)
 		return null;
 	}
 }
+
+var exitHandlers = [];
 	
 exports.controller = {
 	load: function(ops)
@@ -29,8 +31,7 @@ exports.controller = {
 			path = ops.path,
 			pkg = JSON.parse(readFileSync(ops.path + '/package.json') || '{}'),
 			args = ops.args || [];
-			args = args.length ? args : (pkg.slug ? pkg.slug.args || [] : []),
-			exitHandlers = [];
+			args = args.length ? args : (pkg.slug ? pkg.slug.args || [] : []);
 		
 		
 		process.chdir(fs.lstatSync(ops.path).isDirectory() ? ops.path : pt.dirname(ops.path));
