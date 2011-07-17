@@ -187,7 +187,7 @@ exports.pod = function(m)
 				{
 					console.warn('Cannot restart %s', pull.data);
 					
-					return pull.callback(result);
+					return pull.callback(data);
 				}
 				
 				if(!data.result().running) return pull.callback(vine.error('%s is not running', data.result().name));
