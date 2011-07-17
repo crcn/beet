@@ -180,12 +180,17 @@ exports.pod = function(m)
 		console.ok('Trying to restart %s', pull.data);
 		
 		getApp({
-			data: pull.data,
+			data: (pull.data || '').replace(/\./g,''),
 			callback: function(data)
 			{
-				if(data.error()) return pull.callback(result);
+				if(data.error())
+				{
+					console.warn('Cannot restart %s', pull.data);
+					
+					return pull.callback(result);
+				}
 				
-				if(data.result().running) return pull.callback(vine.error('%s is not running', data.result().name));
+				if(!data.result().running) return pull.callback(vine.error('%s is not running', data.result().name));
 				
 				startScript(pull);
 			}
