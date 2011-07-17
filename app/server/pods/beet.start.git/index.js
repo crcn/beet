@@ -33,8 +33,9 @@ exports.pod = function(m)
 				repo = repo.replace(u, u + ':p');
 			}
 		}
-		
-		var projectName = repo.split('/').pop().split('.').shift();
+		var nameParts = repo.split('/').pop().split('.');
+		nameParts.pop();
+		var projectName = nameParts.join('.');//repo.split('/').pop().split('.').shift();
 		
 		
 		exec('sudo rm -rf '+gitDir(projectName)+'; mkdir -p '+gitDir()+'; cd '+gitDir()+'; git clone '+repo+'; cd '+projectName+';', function(err, result)

@@ -32,7 +32,6 @@ exports.pod = function(m)
 			{
 				handler.test(script, function(script)
 				{
-					console.log(script)
 					callback(vine.result({ name: script.split('/').pop(), path: __dirname + '/bin', binPath: script }));
 				});
 			}
@@ -44,5 +43,5 @@ exports.pod = function(m)
 	
 	m.on({
 		'pull beet.start.handler': getStartHandler
-	})
+	});
 }

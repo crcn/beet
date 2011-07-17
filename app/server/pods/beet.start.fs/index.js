@@ -20,7 +20,9 @@ exports.pod = function(m)
 		var handler = {
 			test: function(script, callback)
 			{
-				callback(lstat(script));//false if doesn't exist on the fs.
+				var stat = lstat(script);
+				
+				callback((stat && stat.isDirectory()) || script.split('.').pop() == 'js');//false if doesn't exist on the fs.
 			},
 			load: function(script, callback)
 			{
@@ -51,6 +53,20 @@ exports.pod = function(m)
 						callback(vine.error('A package.json file must be present.'));
 					}
 					return;
+				}
+				else
+				{
+					try
+					{
+						//abs path to the script
+						script = fs.realpathSync(script);
+					}catch(e)
+					{
+						return vine.error('Unable to start %s', pkg.name);
+					}
+					
+					
+					return callback(vine.result({ name: script.split('/').pop(), path: script }));
 				}
 				
 				return callback(vine.error('The script must be a directory'));

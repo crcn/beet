@@ -12,8 +12,14 @@ function spawn(ops)
 {
 	var binPath = ops.binPath.replace(/\s/g,'');
 	
-	cp = child_process.spawn(binPath, ops.args, { cwd: path.dirname(binPath) });
+	var args = ops.args || [];
 	
+	// args.unshift('./'+binPath.split('/').pop());
+	
+	
+	
+	// cp = child_process.spawn('sudo', ops.args, { cwd: path.dirname(binPath) });
+	cp = child_process.spawn(binPath, args, { cwd: path.dirname(binPath) });
 	cp.stdout.on('data', function(data)
 	{
 		data.toString().split(/[\n\r]/g).forEach(function(msg)

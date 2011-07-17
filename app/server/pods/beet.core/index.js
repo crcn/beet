@@ -47,6 +47,10 @@ exports.pod = function(m)
 	
 	function startWorker(app)
 	{
+		app = JSON.parse(JSON.stringify(app));
+		
+		// if(app.argv) app.argv = JSON.parse(app.argv);
+		
 		var w = workers[app.name] = Load.worker(__dirname + '/worker.js').load(app);
 		
 		console.success('Running: %s', app.name);
@@ -62,7 +66,7 @@ exports.pod = function(m)
 		if(false)
 		w.keepAlive(function()
 		{
-			console.warning('Looks like worker has crashed, restarting.');
+			console.warn('Looks like worker has crashed, restarting.');
 			
 			delete workers[app.name];
 			
@@ -102,7 +106,7 @@ exports.pod = function(m)
 				
 				var info = data.result();
 					
-				info.name = (toAdd.name || info.name).toLowerCase();
+				info.name = (toAdd.name || info.name).toLowerCase().replace(/\./g,'-');
 				
 				db.find({ name: info.name }, function(err, results)
 				{
@@ -117,11 +121,9 @@ exports.pod = function(m)
 						start();
 					}
 					
-					if(typeof pullData == 'object')
-					{
-						info = Structr.copy(info, pullData);
-					}
-											
+					info = Structr.copy(info, toAdd);
+														
+					
 					db.set(info.name, info, function(err, ret)
 					{ 
 						pull.callback(vine.message('Successfully added %s, starting', info.name));
@@ -264,11 +266,19 @@ exports.pod = function(m)
 			m.push('beet.ready', true);
 			
 			
+			//broken.
 			d.all(function(err, results)
 			{
 				results.forEach(function(app)
 				{
-					if(app.running) runScript(app);
+					// if(app.running) runScript(app);
+					
+					//fixed.
+					d.find({ name: app.name }, function(err,apps)
+					{
+						var app = apps[0];
+						if(app && app.running) runScript(app);
+					})
 				})
 			});
 			
