@@ -20,15 +20,40 @@ function readFileSync(path)
 	}
 }
 
+var oldProcessExit = process.exit;
+
+process.exit = function()
+{
+	brazln.mediator.push('exit')
+	
+	//give some time to shut down
+	setTimeout(oldProcessExit, 500);
+}
+
+//kill the process if an uncaught error has occurred 
+process.on('uncaughtException', function(err) {
+	
+	console.log("UNCAUGHT")
+	//give time to output the log
+	// console.error(err.stack);
+	
+	//timeou
+	/*setTimeout(function()
+	{
+		process.exit();
+	},3000);*/
+	process.exit();
+});
+
 var exitHandlers = [];
 	
 exports.controller = {
 	load: function(ops)
 	{
 		
-		var oldConsole = console.log,
-			appName = ops.name,
+		var appName = ops.name,
 			path = ops.path,
+			logPath = logPath,
 			pkg = JSON.parse(readFileSync(ops.path + '/package.json') || '{}'),
 			args = ops.args || [];
 			args = args.length ? args : (pkg.slug ? pkg.slug.args || [] : []);
@@ -40,9 +65,9 @@ exports.controller = {
 		
 		var logger = log.logger({ target: console });
 		
-		logger.path = '/data/beet/logs/'+appName+'/';
+		logger.path = logPath;
 
-		var oldConsoleLog = console.log;
+		var oldConsole = console.log;
 		
 		console.log = function()
 		{

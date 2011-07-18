@@ -2,7 +2,8 @@ var Load = require('sk/node/balance').Load,
 	vine = require('vine'),
 	Structr = require('structr').Structr,
 	Tiny = require('node-tiny'),
-	Queue = require('sk/core/queue').Queue;
+	Queue = require('sk/core/queue').Queue,
+	log = require('sk/node/log');
 
 exports.pod = function(m)
 {
@@ -51,19 +52,25 @@ exports.pod = function(m)
 		
 		// if(app.argv) app.argv = JSON.parse(app.argv);
 		
-		var w = workers[app.name] = Load.worker(__dirname + '/worker.js').load(app);
+		app.logPath = '/data/beet/logs/'+app.name+'/';
 		
+		var w = workers[app.name] = Load.worker(__dirname + '/worker.js').load(app),
+			wlogger = log.logger({ path: app.logPath }).logger;
+			
 		console.success('Running: %s', app.name);
 		
 		w.onError = function(e)
 		{
-			console.error(e);
+			//since the child is unable to write to disc, do it the favor :3
+			wlogger.error(e.stack.toString());
+			
+			delete workers[app.name];
 		}
+		
 		
 		toggleRunning(app.name, true);
 		
 		//start pinging the child and make sure it stays alive 
-		if(false)
 		w.keepAlive(function()
 		{
 			console.warn('Looks like worker has crashed, restarting.');
