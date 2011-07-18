@@ -42,7 +42,7 @@ exports.pod = function(m)
 		}
 		else
 		{
-			callback();
+			toggleRunning(appName, false, callback);
 		}
 	}
 	
@@ -77,7 +77,17 @@ exports.pod = function(m)
 			
 			delete workers[app.name];
 			
-			runScript(app);
+			//what if the app was stopped? This will go on forever if it keeps crashing :/
+			getApp({
+				data: app.name,
+				callback: function(result)
+				{
+					if(result.data.errors) return console.error('Unable to start app. This shouldn\'t happen: %s', result.data.errors[0])
+					if(result.result().running) return runScript(result.result());
+					console.ok('Or not...');
+				}
+			})
+			
 		});
 	}
 	

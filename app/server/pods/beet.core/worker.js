@@ -53,7 +53,7 @@ exports.controller = {
 		
 		var appName = ops.name,
 			path = ops.path,
-			logPath = logPath,
+			logPath = ops.logPath,
 			pkg = JSON.parse(readFileSync(ops.path + '/package.json') || '{}'),
 			args = ops.args || [];
 			args = args.length ? args : (pkg.slug ? pkg.slug.args || [] : []);
@@ -134,6 +134,7 @@ exports.controller = {
 				console.success('Log.io is up, sending stuff to watch');
 				
 				logioUp = true;
+				
 				
 				brazln.mediator.pull('log.io.watch', getLogFiles(), function()
 				{
