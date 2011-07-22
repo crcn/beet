@@ -67,22 +67,7 @@ exports.controller = {
 		var logger = log.logger({ target: console });
 		
 		logger.path = logPath;
-
-		var oldConsole = console.log;
-		
-		console.log = function()
-		{
-			var msg = arguments[0];
-
-			if(typeof msg == 'object')
-			{
-				msg = util.inspect(msg, false, null);
-			}
-			
-			arguments[0] = (appName + ': ').blue + msg;
-
-			oldConsole.apply(null, arguments);
-		}
+		logger.prefix = (appName + ': ').blue;
 		
 		function getLogFiles()
 		{

@@ -26,6 +26,8 @@ exports.pod = function(m)
 	{
 		var i, stopped = [];
 
+		if(!callback) callback = function(){};
+
 		function onDone()
 		{
 			if(!(--i)) setTimeout(function()
@@ -82,7 +84,7 @@ exports.pod = function(m)
 		w.onError = function(e)
 		{
 			//since the child is unable to write to disc, do it the favor :3
-			wlogger.error(e.stack.toString());
+			wlogger.error(e.stack);
 			
 			delete workers[app.name];
 		}
@@ -431,8 +433,6 @@ exports.pod = function(m)
 
 	function getApps(pull)
 	{
-		console.log(pull.data);
-
 		var name = pull.data ? pull.data.name || pull.data : 'undefined';
 
 		_getApps(name, function(apps)

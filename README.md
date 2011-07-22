@@ -38,6 +38,7 @@ Goodies:
 
 - Keeps apps running even after the system restarts. 
 - checks health on running apps and restarts any which are non-responsive.
+- Start / Stop processes with wildcards. E.g: start myAppGroup-*
 - Extendable thanks to [brazln](https://github.com/spiceapps/brazln). 
 
 
