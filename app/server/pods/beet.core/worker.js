@@ -34,6 +34,7 @@ process.exit = function()
 process.on('uncaughtException', function(err) {
 	
 	console.log("UNCAUGHT")
+	console.log(err.stack)
 	//give time to output the log
 	// console.error(err.stack);
 	

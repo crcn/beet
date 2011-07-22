@@ -1,6 +1,6 @@
 var Load = require('sk/node/balance').Load,
 	vine = require('vine'),
-	Structr = require('structr').Structr,
+	Structr = require('structr'),
 	Tiny = require('node-tiny'),
 	Queue = require('sk/core/queue').Queue,
 	log = require('sk/node/log');
@@ -16,34 +16,54 @@ exports.pod = function(m)
 	{
 		db.update(app, { running: running }, callback || function(){});
 	}
+
+	function _stop(appName, callback)
+	{
+		
+	}
 	
 	function stopWorker(appName, callback)
 	{
-		var w = workers[appName];
-		
-		
-		if(w)
+		var i, stopped = [];
+
+		function onDone()
 		{
-			console.success('Stopping %s', appName);
-			
-			w.exit(function()
+			if(!(--i)) setTimeout(function()
 			{
-				w.terminate(1);
-
-				delete workers[appName];
-
-				toggleRunning(appName, false, function()
-				{
-					setTimeout(callback, 500);
-				});
-			});
-			
-			
+				callback(stopped.join(','));
+			}, 500);
 		}
-		else
+		_getApps(appName, function(apps)
 		{
-			toggleRunning(appName, false, callback);
-		}
+			i = apps.length;
+
+			if(!i) return callback();
+
+			apps.forEach(function(app)
+			{
+				stopped.push(app.name);
+
+				var w = workers[app.name];
+
+				if(w)
+				{
+					console.success('Stopping %s', app.name);
+						
+					w.exit(function()
+					{
+						w.terminate(1);
+
+						delete workers[app.name];
+
+						toggleRunning(app.name, false, onDone);
+					});
+				}
+				else
+				{
+					toggleRunning(app.name, false, onDone);
+				}
+			})
+		})
 	}
 	
 	function startWorker(app)
@@ -177,17 +197,23 @@ exports.pod = function(m)
 	
 	function startScript(pull)
 	{
-		getApp({
+		getApps({
 			data: pull.data,
 			callback: function(data)
 			{
 				if(data.error()) return pull.callback(data);
 				
-				var app = data.result();
+				var running = [];
+
+				data.result().forEach(function(app)
+				{
+					running.push(app.name);
+
+					runScript(app);
+				});
 				
-				runScript(app);
 				
-				pull.callback(vine.message('Successfully started %s', app.name));
+				pull.callback(vine.message('Successfully started %s', running.join(',')));
 			}
 		});
 	}
@@ -216,22 +242,43 @@ exports.pod = function(m)
 	
 	function removeScript(pull)
 	{
-		getApp({
+		getApps({
 			data: pull.data,
 			callback: function(data)
 			{
 				if(data.error()) return pull.callback(data);
 				
-				var appName = data.result().name;
-				
-				console.ok('Removing %s', appName);
-				
-				stopScript(pull);
-				
-				db.remove(appName, function()
+				var q = new Queue(),
+					removed = [];
+
+				data.result().forEach(function(app)
 				{
-					pull.callback(vine.message('Successfully removed %s', appName));
-				})
+					console.ok('Removing %s', app.name);
+
+
+					q.add(function()
+					{
+						db.remove(app.name, function()
+						{
+							removed.push(app.name);
+
+							q.next();
+						});	
+
+						stopWorker(app.name);
+					});
+					
+
+				});
+
+				q.add(function()
+				{
+					pull.callback(vine.message('Successfully removed %s', removed.join(',')));
+				});
+
+				q.start();
+				
+				
 			}
 		});
 	}
@@ -242,7 +289,7 @@ exports.pod = function(m)
 		
 		console.ok('stopping %s', scriptName);
 		
-		stopWorker(scriptName, function()
+		stopWorker(scriptName, function(scriptName)
 		{
 			pull.callback(vine.message('Stopped %s', scriptName));
 		})
@@ -351,6 +398,48 @@ exports.pod = function(m)
 			if(scriptName == appName) return pull.callback(vine.result(scripts[scriptName]));
 		}*/
 		
+	}
+
+	function getAppSearch(name)
+	{
+		if(!name) name = '';
+
+		return name.indexOf('*') > -1 ? new RegExp('^'+name.split('*').shift(),'gi') : new RegExp('^'+name+'$','gi');
+	}
+
+	function _getApps(name, callback)
+	{
+		var search = getAppSearch(name),
+		apps = [];
+
+		db.all(function(err, results)
+		{
+			for(var i = results.length; i--;)
+			{
+				var app = results[i];
+
+				if(app.name && app.name.toString().match(search))
+				{
+					apps.push(app);
+				}
+
+			}
+		});
+
+		callback(apps)
+	}
+
+	function getApps(pull)
+	{
+		console.log(pull.data);
+
+		var name = pull.data ? pull.data.name || pull.data : 'undefined';
+
+		_getApps(name, function(apps)
+		{
+			if(!apps.length) return pull.callback(vine.error('The app %s does not exist', name));
+			pull.callback(vine.result(apps));
+		});
 	}
 	
 	function isBeetReady(pull)
