@@ -14,7 +14,7 @@ function lstat(path)
 	}
 }
 
-exports.pod = function(m)
+exports.plugin = function(m)
 {
 	function getStartHandler(pull)
 	{
@@ -38,10 +38,10 @@ exports.pod = function(m)
 		}
 		
 		
-		pull.callback(handler);
+		pull.end(handler);
 	}
 	
 	m.on({
-		'pull beet.start.handler': getStartHandler
+		'pull -multi beet/start/handler': getStartHandler
 	});
 }

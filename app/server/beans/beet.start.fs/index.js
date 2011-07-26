@@ -13,7 +13,7 @@ function lstat(path)
 	}
 }
 
-exports.pod = function(m)
+exports.plugin = function(m)
 {
 	function getStartHandler(pull)
 	{
@@ -33,6 +33,7 @@ exports.pod = function(m)
 					var packagePath = script + '/package.json',
 						pstat;
 
+					console.log("G")
 					if(pstat = lstat(packagePath))
 					{
 						var pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
@@ -43,8 +44,9 @@ exports.pod = function(m)
 								pkg.main = fs.realpathSync(script + '/' + pkg.main);
 							}catch(e)
 							{
-								return vine.error('Unable to start %s', pkg.name);
+								return callback(vine.error('Unable to start %s', pkg.name));
 							}
+						console.log("CO")
 							
 						callback(vine.result({ name: pkg.name, path: script }));
 					}
@@ -74,10 +76,10 @@ exports.pod = function(m)
 		}
 		
 		
-		pull.callback(handler);
+		pull.end(handler);
 	}
 	
 	m.on({
-		'pull beet.start.handler': getStartHandler
+		'pull -multi beet/start/handler': getStartHandler
 	})
 }

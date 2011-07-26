@@ -1,4 +1,4 @@
-var brazln = require('brazln'),
+var beanpole = require('beanpole'),
 	child_process = require('child_process'),
 	path = require('path');
 	
@@ -45,12 +45,12 @@ function spawn(ops)
 	})
 }
 
-brazln.mediator.pull('beet.app.ops', spawn);
+beanpole.mediator.pull('beet.app.ops', spawn);
 
-brazln.mediator.on({
-	'push add.exit.handler': function(stack)
+beanpole.mediator.on({
+	'pull -multi add/exit/handler': function(pull)
 	{
-		stack.push({
+		pull.end({
 			exit: function(callback)
 			{
 				if(!cp) return callback();
@@ -66,4 +66,4 @@ brazln.mediator.on({
 	}
 })
 
-brazln.mediator.push('init');
+beanpole.mediator.push('init');

@@ -3,7 +3,8 @@ require('sk/node/log');
 var util = require('util'),
 	fs = require('fs'),
 	pt = require('path'),
-	brazln = require('brazln'),
+	
+	beanpole = require('beanpole'),
 	utils = require('sk/node/utils'),
 	pt = require('path'),
 	log = require('sk/node/log');
@@ -24,7 +25,7 @@ var oldProcessExit = process.exit;
 
 process.exit = function()
 {
-	brazln.mediator.push('exit')
+	beanpole.mediator.push('exit')
 	
 	//give some time to shut down
 	setTimeout(oldProcessExit, 500);
@@ -86,21 +87,21 @@ exports.controller = {
 		
 		var logioUp = false;
 		
-		brazln.require(['glue.core','glue.http']);
+		beanpole.require(['glue.core','glue.http']);
 		
-		brazln.mediator.on({
-			'pull beet.app.ops': function(pull)
+		beanpole.mediator.on({
+			'pull beet/app/ops': function(pull)
 			{
-				pull.callback(ops);
+				pull.end(ops);
 			},
-			'pull add.exit.handler': function(handlers)
+			'pull -multi add/exit/handler': function(pull)
 			{
 				var eh = {
 					exit: function(callback)
 					{
 						if(!logioUp) return callback();
 						
-						brazln.mediator.pull('log.io.unwatch', getLogFiles(), function(pull)
+						beanpole.mediator.pull('log/io/unwatch', getLogFiles(), function(pull)
 						{
 							callback();
 						})
@@ -109,20 +110,23 @@ exports.controller = {
 					}
 				};
 				
-				handlers.push(eh);
+				pull.end(eh)
 			},
 			'push init': function()
 			{
-				brazln.mediator.push('add.exit.handler', exitHandlers);
+				beanpole.mediator.pull('-multi add/exit/handler', function(handler)
+				{
+					exitHandlers.push(handler);
+				});
 			},
-			'push andPull log.io.ready': function()
+			'push -pull log/io/ready': function()
 			{
 				console.success('Log.io is up, sending stuff to watch');
 				
 				logioUp = true;
 				
 				
-				brazln.mediator.pull('log.io.watch', getLogFiles(), function()
+				beanpole.mediator.pull('log/io/watch', getLogFiles(), function()
 				{
 					
 				});

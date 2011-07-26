@@ -5,7 +5,7 @@ var Load = require('sk/node/balance').Load,
 	Queue = require('sk/core/queue').Queue,
 	log = require('sk/node/log');
 
-exports.pod = function(m)
+exports.plugin = function(m)
 {
 	var handlers = [],
 		db,
@@ -102,7 +102,7 @@ exports.pod = function(m)
 			//what if the app was stopped? This will go on forever if it keeps crashing :/
 			getApp({
 				data: app.name,
-				callback: function(result)
+				end: function(result)
 				{
 					if(result.data.errors) return console.error('Unable to start app. This shouldn\'t happen: %s', result.data.errors[0])
 					if(result.result().running) return runScript(result.result());
@@ -141,7 +141,7 @@ exports.pod = function(m)
 		{
 			handler.load(toAdd.path, function(data)
 			{
-				if(data.error()) return pull.callback(data);
+				if(data.error()) return pull.end(data);
 				
 				var info = data.result();
 					
@@ -151,12 +151,12 @@ exports.pod = function(m)
 				{
 					function start()
 					{
-						startScript({ data: info.name, callback: function(){}});
+						startScript({ data: info.name, end: function(){}});
 					}
 					
 					if(results.length)
 					{
-						pull.callback(vine.warning('%s is already running, restarting', info.name));
+						pull.end(vine.warning('%s is already running, restarting', info.name));
 						start();
 					}
 					
@@ -165,7 +165,7 @@ exports.pod = function(m)
 					
 					db.set(info.name, info, function(err, ret)
 					{ 
-						pull.callback(vine.message('Successfully added %s, starting', info.name));
+						pull.end(vine.message('Successfully added %s, starting', info.name));
 						start();
 					});
 				});
@@ -193,7 +193,7 @@ exports.pod = function(m)
 		
 		q.add(function()
 		{
-			pull.callback(vine.error('unable to parse'));
+			pull.end(vine.error('unable to parse'));
 		})
 	}
 	
@@ -201,9 +201,9 @@ exports.pod = function(m)
 	{
 		getApps({
 			data: pull.data,
-			callback: function(data)
+			end: function(data)
 			{
-				if(data.error()) return pull.callback(data);
+				if(data.error()) return pull.end(data);
 				
 				var running = [];
 
@@ -215,7 +215,7 @@ exports.pod = function(m)
 				});
 				
 				
-				pull.callback(vine.message('Successfully started %s', running.join(',')));
+				pull.end(vine.message('Successfully started %s', running.join(',')));
 			}
 		});
 	}
@@ -226,16 +226,16 @@ exports.pod = function(m)
 		
 		getApp({
 			data: (pull.data || '').replace(/\./g,''),
-			callback: function(data)
+			end: function(data)
 			{
 				if(data.error())
 				{
 					console.warn('Cannot restart %s', pull.data);
 					
-					return pull.callback(data);
+					return pull.end(data);
 				}
 				
-				if(!data.result().running) return pull.callback(vine.error('%s is not running', data.result().name));
+				if(!data.result().running) return pull.end(vine.error('%s is not running', data.result().name));
 				
 				startScript(pull);
 			}
@@ -246,9 +246,9 @@ exports.pod = function(m)
 	{
 		getApps({
 			data: pull.data,
-			callback: function(data)
+			end: function(data)
 			{
-				if(data.error()) return pull.callback(data);
+				if(data.error()) return pull.end(data);
 				
 				var q = new Queue(),
 					removed = [];
@@ -275,7 +275,7 @@ exports.pod = function(m)
 
 				q.add(function()
 				{
-					pull.callback(vine.message('Successfully removed %s', removed.join(',')));
+					pull.end(vine.message('Successfully removed %s', removed.join(',')));
 				});
 
 				q.start();
@@ -293,7 +293,7 @@ exports.pod = function(m)
 		
 		stopWorker(scriptName, function(scriptName)
 		{
-			pull.callback(vine.message('Stopped %s', scriptName));
+			pull.end(vine.message('Stopped %s', scriptName));
 		})
 	}
 	
@@ -306,7 +306,7 @@ exports.pod = function(m)
 				if(!results[i].name) results.splice(i,1);
 			}
 			
-			pull.callback(vine.result(results));
+			pull.end(vine.result(results));
 		});
 		
 		/*var scripts = _scripts(),
@@ -319,7 +319,7 @@ exports.pod = function(m)
 			batch.push({ name: scriptName, path: inf.path, running: inf.running });
 		}
 		
-		pull.callback(vine.result(batch));*/
+		pull.end(vine.result(batch));*/
 	}
 	
 	
@@ -332,9 +332,7 @@ exports.pod = function(m)
 			
 			db = d;
 			
-			ready = true;
-			
-			m.push('beet.ready', true);
+			m.push('ready', 'beet');
 			
 			
 			//broken.
@@ -354,19 +352,14 @@ exports.pod = function(m)
 			});
 			
 			
-			m.pull('beet.start.handler', function(handler)
+			m.pullMulti('beet/start/handler', function(handler)
 			{
 				handlers.push(handler);
 			});
 		});
 		
 	}
-	
-	function onConnection(connection)
-	{
-		console.success('Client connected');
-		connection.push('beet.ready');
-	}
+
 	
 	function getApp(pull)
 	{
@@ -384,12 +377,12 @@ exports.pod = function(m)
 			search = { name: s.name, $in : { 'tags': s.tags || [] }};
 		}
 		else
-		return pull.callback(vine.error('app name not present'));
+		return pull.end(vine.error('app name not present'));
 		
 		db.find(search, function(err, results)
 		{
-			if(!results.length) return pull.callback(vine.error('%s does not exist', search.name));
-			pull.callback(vine.result(results[0]));
+			if(!results.length) return pull.end(vine.error('%s does not exist', search.name));
+			pull.end(vine.result(results[0]));
 		});
 		
 		/*var appName = pull.data,
@@ -397,14 +390,14 @@ exports.pod = function(m)
 		
 		for(var scriptName in scripts)
 		{
-			if(scriptName == appName) return pull.callback(vine.result(scripts[scriptName]));
+			if(scriptName == appName) return pull.end(vine.result(scripts[scriptName]));
 		}*/
 		
 	}
 
 	function getAppSearch(name)
 	{
-		if(!name) name = '';
+		name = name+'';
 
 		return name.indexOf('*') > -1 ? new RegExp('^'+name.split('*').shift(),'gi') : new RegExp('^'+name+'$','gi');
 	}
@@ -437,27 +430,20 @@ exports.pod = function(m)
 
 		_getApps(name, function(apps)
 		{
-			if(!apps.length) return pull.callback(vine.error('The app %s does not exist', name));
-			pull.callback(vine.result(apps));
+			if(!apps.length) return pull.end(vine.error('The app %s does not exist', name));
+			pull.end(vine.result(apps));
 		});
-	}
-	
-	function isBeetReady(pull)
-	{
-		pull.callback(ready);
 	}
 	
 	
 	m.on({
 		'push init': init,
-		'push glue.connection': onConnection,
-		'pull public beet.ready': isBeetReady,
-		'pull public beet.add': addScript,
-		'pull public beet.app': getApp,
-		'pull public beet.remove': removeScript,
-		'pull public beet.start': startScript,
-		'pull public beet.restart': restartScript,
-		'pull public beet.stop': stopScript,
-		'pull public beet.list': listScripts
+		'pull -public beet/add': addScript,
+		'pull -public beet/app': getApp,
+		'pull -public beet/remove': removeScript,
+		'pull -public beet/start': startScript,
+		'pull -public beet/restart': restartScript,
+		'pull -public beet/stop': stopScript,
+		'pull -public beet/list': listScripts
 	});
 }

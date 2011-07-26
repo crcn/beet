@@ -1,5 +1,6 @@
-var brazln = require('brazln');
+var beanpole = require('beanpole');
 
-brazln.params({'express.core':{ port: 8730 }}).
+beanpole.params({'express.core':{ port: 8730 }}).
 require(['glue.core','glue.http']).
-require(__dirname + '/pods').push('init', '/data/beet/scripts.tiny');
+require(__dirname + '/beans').
+push('init', '/data/beet/scripts.tiny');

@@ -1,19 +1,18 @@
-var brazln = require('brazln'),
+var beanpole = require('beanpole'),
 	Queue = require('sk/core/queue').Queue,
 	q = new Queue(true),
 	beet = require('../index');
 	
 
-var m = brazln.require(['glue.core','glue.http']);
+var m = beanpole.require(['glue.core','glue.http']);
 
 m.push('init');
 
 q.add(function(){});
 
 m.on({
-	'push glue.connection': function()
+	'push -public beet/ready': function()
 	{
-		// q.next();
 		setTimeout(q.getMethod('next'), 100);
 	}
 });

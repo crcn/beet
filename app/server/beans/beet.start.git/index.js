@@ -6,7 +6,7 @@ var qs = require('querystring'),
 
 
 
-exports.pod = function(m)
+exports.plugin = function(m)
 {
 	function gitDir(appName)
 	{
@@ -82,7 +82,7 @@ exports.pod = function(m)
 			}
 		}
 		
-		pull.callback(handler);
+		pull.end(handler);
 	}
 	
 	
@@ -128,11 +128,11 @@ exports.pod = function(m)
 			]
 		}
 		
-		pull.callback(routes);
+		pull.end(routes);
 	}
 	
 	m.on({
-		'pull beet.start.handler': getStartHandler,
-		'pull express.routes': getRoutes
+		'pull -multi beet/start/handler': getStartHandler,
+		'pull express/routes': getRoutes
 	})
 }

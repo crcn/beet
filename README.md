@@ -39,7 +39,7 @@ Goodies:
 - Keeps apps running even after the system restarts. 
 - checks health on running apps and restarts any which are non-responsive.
 - Start / Stop processes with wildcards. E.g: start myAppGroup-*
-- Extendable thanks to [brazln](https://github.com/spiceapps/brazln). 
+- Extendable thanks to [beanpole](https://github.com/spiceapps/beanpole). 
 
 
 Terminal Usage:
@@ -91,7 +91,7 @@ To Do:
 -----
 
 - Better logging for broken apps.
-- Use the beet pods in other [brazln](https://github.com/spiceapps/brazln)-based apps.
+- Use the beet pods in other [beanpole](https://github.com/spiceapps/beanpole)-based apps.
 - Dispatch git commits to any other "glued" beet instances (cluster).
 - Need to setup http-auth for pushing git commits.
 - Help file for CLI.

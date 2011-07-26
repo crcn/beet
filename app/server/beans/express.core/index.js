@@ -1,13 +1,13 @@
 var express = require('express');
 
-exports.pod = function(m, params)
+exports.plugin = function(m, params)
 {
 	
 	function init()
 	{
 		var srv = express.createServer();
 		
-		m.pull('express.routes', function(routes)
+		m.pull('express/routes', function(routes)
 		{
 			for(var method in routes)
 			{
