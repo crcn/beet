@@ -90,6 +90,7 @@ Getting there...
 To Do:
 -----
 
+- Need to get off tinydb. It's buggy.
 - Better logging for broken apps.
 - Use the beet pods in other [beanpole](https://github.com/spiceapps/beanpole)-based apps.
 - Dispatch git commits to any other "glued" beet instances (cluster).
