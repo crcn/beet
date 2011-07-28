@@ -45,7 +45,7 @@ function spawn(ops)
 	})
 }
 
-beanpole.mediator.pull('beet.app.ops', spawn);
+beanpole.mediator.pull('beet/app/ops', spawn);
 
 beanpole.mediator.on({
 	'pull -multi add/exit/handler': function(pull)

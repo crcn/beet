@@ -119,8 +119,9 @@ exports.controller = {
 					exitHandlers.push(handler);
 				});
 			},
-			'push -pull log/io/ready': function()
+			'push -public -pull log/io/ready': function()
 			{
+
 				console.success('Log.io is up, sending stuff to watch');
 				
 				logioUp = true;
