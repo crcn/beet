@@ -1,7 +1,7 @@
 {
     "name":"beet",
     "descriptions": "Upstart processes and keep them running",
-    "version": "0.0.2",
+    "version": "0.0.2-2",
     "author": "Craig Condon <craig@spiceapps.com>",
     "bin": {
         "beet": "./bin/beet"
@@ -17,7 +17,7 @@
         "express":"*",
         "vine":"*",
         "structr":"*",
-        "node-tiny":"*",
+        "tiny":"*",
         "websocket-client":"1.0.0",
         "websocket-server":"1.4.04"
         
@@ -28,7 +28,6 @@
         "freebsd"
     ],
     "scripts": {
-        "install": "./bin/beet load",
-        "uninstall": "./bin/beet unload"
+        "install": "./bin/beet load"
     }
 }

@@ -4,7 +4,7 @@ var beanpole = require('beanpole'),
 	beet = require('../index');
 	
 
-var m = beanpole.require(['glue.core','glue.http']);
+var m = beanpole.require(['hook.core','hook.http']);
 
 m.push('init');
 

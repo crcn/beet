@@ -334,7 +334,6 @@ exports.plugin = function(m)
 			
 			m.push('ready', 'beet');
 			
-			
 			//broken.
 			d.all(function(err, results)
 			{

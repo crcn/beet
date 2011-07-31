@@ -87,7 +87,7 @@ exports.controller = {
 		
 		var logioUp = false;
 		
-		beanpole.require(['glue.core','glue.http']);
+		beanpole.require(['hook.core','hook.http']);
 		
 		beanpole.mediator.on({
 			'pull beet/app/ops': function(pull)
