@@ -40,7 +40,7 @@ exports.plugin = function(m)
 		
 		pull.end(handler);
 	}
-	
+
 	m.on({
 		'pull -multi beet/start/handler': getStartHandler
 	});

@@ -60,10 +60,7 @@ exports.plugin = function(m)
 			console.log(result);
 			console.log(err);
 			
-			m.pull('beet/restart', appName, function()
-			{
-				
-			})
+			m.pull('beet/restart', appName, function() { });
 			
 			if(err) return console.error(err);
 		});

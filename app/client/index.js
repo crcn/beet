@@ -46,9 +46,9 @@ var _q = function(org, callback)
 		
 		q.add(function()
 		{
-			org(args[0], function(msg)
+			org(args[0], function()
 			{
-				callback(msg);
+				callback.apply(null, arguments);
 				process.exit();
 			});
 		});

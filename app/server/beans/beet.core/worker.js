@@ -25,7 +25,7 @@ var oldProcessExit = process.exit;
 
 process.exit = function()
 {
-	beanpole.mediator.push('exit')
+	beanpole.push('exit')
 	
 	//give some time to shut down
 	setTimeout(oldProcessExit, 500);
@@ -89,19 +89,19 @@ exports.controller = {
 		
 		beanpole.require(['hook.core','hook.http']);
 		
-		beanpole.mediator.on({
-			'pull beet/app/ops': function(pull)
+		beanpole.on({
+			'pull beet/app/ops': function()
 			{
-				pull.end(ops);
+				return ops;
 			},
-			'pull -multi add/exit/handler': function(pull)
+			'pull -multi add/exit/handler': function()
 			{
-				var eh = {
+				return {
 					exit: function(callback)
 					{
 						if(!logioUp) return callback();
 						
-						beanpole.mediator.pull('log/io/unwatch', getLogFiles(), function(pull)
+						beanpole.pull('log/io/unwatch', getLogFiles(), function(pull)
 						{
 							callback();
 						})
@@ -109,12 +109,10 @@ exports.controller = {
 						setTimeout(callback,1000);
 					}
 				};
-				
-				pull.end(eh)
 			},
 			'push init': function()
 			{
-				beanpole.mediator.pull('-multi add/exit/handler', function(handler)
+				beanpole.pull('-multi add/exit/handler', function(handler)
 				{
 					exitHandlers.push(handler);
 				});
@@ -127,7 +125,7 @@ exports.controller = {
 				logioUp = true;
 				
 				
-				beanpole.mediator.pull('log/io/watch', getLogFiles(), function()
+				beanpole.pull('log/io/watch', getLogFiles(), function()
 				{
 					
 				});

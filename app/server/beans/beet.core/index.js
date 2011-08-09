@@ -1,7 +1,7 @@
 var Load = require('sk/node/balance').Load,
 	vine = require('vine'),
 	Structr = require('structr'),
-	Tiny = require('node-tiny'),
+	Tiny = require('tiny'),
 	Queue = require('sk/core/queue').Queue,
 	log = require('sk/node/log');
 
@@ -423,14 +423,15 @@ exports.plugin = function(m)
 		callback(apps)
 	}
 
-	function getApps(pull)
+	function getApps(request)
 	{
-		var name = pull.data ? pull.data.name || pull.data : 'undefined';
+		var name = request.data ? request.data.name || request.data : 'undefined';
 
 		_getApps(name, function(apps)
 		{
-			if(!apps.length) return pull.end(vine.error('The app %s does not exist', name));
-			pull.end(vine.result(apps));
+			if(!apps.length) return request.end(vine.error('The app %s does not exist', name));
+
+			request.end(vine.result(apps));
 		});
 	}
 	

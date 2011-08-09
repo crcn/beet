@@ -4,7 +4,7 @@ var _pull = function(type)
 {
 	return function(data, callback)
 	{
-		beanpole.mediator.pull(type, data, function()
+		beanpole.pull(type, data, function()
 		{
 			callback.apply(null, arguments);
 		});
