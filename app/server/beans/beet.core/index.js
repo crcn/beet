@@ -1,7 +1,7 @@
 var Load = require('sk/node/balance').Load,
 	vine = require('vine'),
 	Structr = require('structr'),
-	Tiny = require('tiny'),
+	dirty = require('./db'),
 	Queue = require('sk/core/queue').Queue,
 	log = require('sk/node/log');
 
@@ -14,14 +14,9 @@ exports.plugin = function(m)
 
 	function toggleRunning(app, running, callback)
 	{
-		db.update(app, { running: running }, callback || function(){});
+		db.update(app, { running: running }, callback);
 	}
 
-	function _stop(appName, callback)
-	{
-		
-	}
-	
 	function stopWorker(appName, callback)
 	{
 		var i, stopped = [];
@@ -35,6 +30,7 @@ exports.plugin = function(m)
 				callback(stopped.join(','));
 			}, 500);
 		}
+
 		_getApps(appName, function(apps)
 		{
 			i = apps.length;
@@ -115,7 +111,6 @@ exports.plugin = function(m)
 	
 	function runScript(app)
 	{
-		
 		stopWorker(app.name, function()
 		{
 			startWorker(app);
@@ -147,7 +142,7 @@ exports.plugin = function(m)
 					
 				info.name = (toAdd.name || info.name).toLowerCase().replace(/\./g,'-');
 				
-				db.find({ name: info.name }, function(err, results)
+				db.find({ name: info.name }, function(results)
 				{
 					function start()
 					{
@@ -161,9 +156,9 @@ exports.plugin = function(m)
 					}
 					
 					info = Structr.copy(info, toAdd);
-														
+												
 					
-					db.set(info.name, info, function(err, ret)
+					db.set(info.name, info, function()
 					{ 
 						pull.end(vine.message('Successfully added %s, starting', info.name));
 						start();
@@ -257,10 +252,9 @@ exports.plugin = function(m)
 				{
 					console.ok('Removing %s', app.name);
 
-
 					q.add(function()
 					{
-						db.remove(app.name, function()
+						db.rm(app.name, function()
 						{
 							removed.push(app.name);
 
@@ -299,64 +293,32 @@ exports.plugin = function(m)
 	
 	function listScripts(pull)
 	{
-		db.all(function(err, results)
+		db.find(function(results)
 		{
-			for(var i = results.length; i--;)
-			{
-				if(!results[i].name) results.splice(i,1);
-			}
-			
 			pull.end(vine.result(results));
 		});
-		
-		/*var scripts = _scripts(),
-			batch = [];
-	
-		for(var scriptName in scripts)
-		{
-			var inf = scripts[scriptName];
-			
-			batch.push({ name: scriptName, path: inf.path, running: inf.running });
-		}
-		
-		pull.end(vine.result(batch));*/
 	}
 	
 	
 	function init(dbPath)
 	{
-		
-		Tiny(dbPath, function(err, d)
+		dirty(dbPath, function(d)
 		{
-			if(err) return console.error(err.stack);
-			
 			db = d;
 			
 			m.push('ready', 'beet');
 			
-			//broken.
-			d.all(function(err, results)
+			db.forEach(function(key, app)
 			{
-				results.forEach(function(app)
-				{
-					// if(app.running) runScript(app);
-					
-					//fixed.
-					d.find({ name: app.name }, function(err,apps)
-					{
-						var app = apps[0];
-						if(app && app.running) runScript(app);
-					})
-				})
+				if(app && app.running) runScript(app);
 			});
 			
 			
 			m.pullMulti('beet/start/handler', function(handler)
 			{
 				handlers.push(handler);
-			});
+			});	
 		});
-		
 	}
 
 	
@@ -370,17 +332,18 @@ exports.plugin = function(m)
 		{
 			search = { name: s };
 		}
-		else
+
 		if(s)
 		{
-			search = { name: s.name, $in : { 'tags': s.tags || [] }};
+			search = { name: s.name };
 		}
 		else
 		return pull.end(vine.error('app name not present'));
 		
-		db.find(search, function(err, results)
+		db.find(search, function(results)
 		{
 			if(!results.length) return pull.end(vine.error('%s does not exist', search.name));
+
 			pull.end(vine.result(results[0]));
 		});
 		
@@ -406,7 +369,7 @@ exports.plugin = function(m)
 		var search = getAppSearch(name),
 		apps = [];
 
-		db.all(function(err, results)
+		db.find(function(results)
 		{
 			for(var i = results.length; i--;)
 			{
