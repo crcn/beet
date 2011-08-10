@@ -332,7 +332,7 @@ exports.plugin = function(m)
 		{
 			search = { name: s };
 		}
-
+		else
 		if(s)
 		{
 			search = { name: s.name };
@@ -340,6 +340,8 @@ exports.plugin = function(m)
 		else
 		return pull.end(vine.error('app name not present'));
 		
+		console.log(search);
+
 		db.find(search, function(results)
 		{
 			if(!results.length) return pull.end(vine.error('%s does not exist', search.name));

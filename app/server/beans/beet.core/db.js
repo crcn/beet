@@ -5,7 +5,7 @@ var fs = require('fs');
 function db(file, onOpen)
 {
 
-	var _db = {}, saving = false, self = this;
+	var _db = {}, self = this;
 	
 	this.set = function(key, value, callback)
 	{
@@ -89,9 +89,6 @@ function db(file, onOpen)
 
 	function save()
 	{
-		if(saving) return;
-
-		saving = true;
 
 		fs.writeFileSync(file, JSON.stringify(_db));
 	}
