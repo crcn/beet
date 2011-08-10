@@ -104,7 +104,7 @@ check host nodejs with address 127.0.0.1
     stop program  = "/sbin/stop $NAME"
     if failed port $CHECK_PORT protocol HTTP
         request /
-        with timeout 10 seconds
+        with timeout 360 seconds
         then restart
 EOF
 )
