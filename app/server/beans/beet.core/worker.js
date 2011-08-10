@@ -23,13 +23,13 @@ function readFileSync(path)
 
 var oldProcessExit = process.exit;
 
-process.exit = function()
+/*process.exit = function()
 {
 	beanpole.push('exit')
 	
 	//give some time to shut down
 	setTimeout(oldProcessExit, 500);
-}
+}*/
 
 //kill the process if an uncaught error has occurred 
 process.on('uncaughtException', function(err) {
