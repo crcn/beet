@@ -46,15 +46,21 @@ exports.plugin = function(m)
 				if(w)
 				{
 					console.success('Stopping %s', app.name);
-						
-					w.exit(function()
+
+					function onExit()
 					{
+						clearTimeout(exitTimeout);
+						
 						w.terminate(1);
 
 						delete workers[app.name];
 
 						toggleRunning(app.name, false, onDone);
-					});
+					}
+						
+					w.exit(onExit);
+
+					var exitTimeout = setTimeout(onExit, 5000);
 				}
 				else
 				{

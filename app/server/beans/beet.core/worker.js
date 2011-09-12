@@ -87,7 +87,7 @@ exports.controller = {
 		
 		var logioUp = false;
 		
-		beanpole.require(['hook.core','hook.http']);
+		beanpole.require(['hook.core','hook.http.mesh']);
 		
 		beanpole.on({
 			'pull beet/app/ops': function()
@@ -139,7 +139,7 @@ exports.controller = {
 	{
 		var i = exitHandlers.length;
 		
-		if(!i) return callback();
+		if(!i || true) return callback();
 		
 		exitHandlers.forEach(function(handler)
 		{

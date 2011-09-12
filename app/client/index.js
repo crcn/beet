@@ -4,7 +4,7 @@ var beanpole = require('beanpole'),
 	beet = require('../index');
 	
 
-var m = beanpole.require(['hook.core','hook.http']);
+var m = beanpole.require(['hook.core','hook.http.mesh']);
 
 m.push('init');
 

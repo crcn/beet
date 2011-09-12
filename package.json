@@ -26,8 +26,5 @@
         "linux",
         "darwin",
         "freebsd"
-    ],
-    "scripts": {
-        "install": "./bin/beet load"
-    }
+    ]
 }
