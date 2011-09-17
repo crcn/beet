@@ -1,7 +1,0 @@
-{
-    "name":"test",
-    "descriptions": "Test script from lots of BLEH",
-    "version": "0.0.1",
-    "author": "Craig Condon <craig@spiceapps.com>",
-    "main": "./test.js"
-}
