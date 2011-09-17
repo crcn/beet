@@ -1,7 +1,9 @@
 #!/bin/bash
 
 #Directory where supervisord looks for node.js config files
-SUPERVISOR_D_CONF_DIR=/etc/beet/conf/;
+SUPERVISOR_D_CONF_DIR=/etc/beet/conf;
+BEET_LOG_DIR=/var/log/beet;
+TEMPLATE_PATH="`pwd`/supervisord.conf"
 
 #package managers for installing supervisord
 PACKAGE_MANAGERS=( "easy_install" "aptitude" );
@@ -42,7 +44,8 @@ set_supervisor_config_path () {
 init () {
 	
 	#all the initialization stuff here
-	mkdir -p $SUPERVISOR_D_CONF_DIR;
+	mkdir -p $SUPERVISOR_D_CONF_DIR $BEET_LOG_DIR;
+	
 	
 	#first need to check to see if a package manager exists, otherwise exit
 	set_package_manager;
@@ -55,6 +58,9 @@ init () {
 	
 	#include the beet path
 	check_concat;
+	
+	#enter supervisord credentials
+	enter_credits;
 	
 	#option to add upstart script
 	check_upstart;
@@ -112,13 +118,13 @@ install_supervisord () {
 	#installing...
 	$PACKAGE_MANAGER "supervisor";
 	
-	
+	``
 	#echo the config file
-	echo_supervisord_conf > /etc/supervisord.conf;
+	cat $TEMPLATE_PATH > /etc/supervisord.conf;
 }
 
 check_supervisord () {
-	if [ ! `which supervisordd` ];
+	if [ ! `which supervisord` ];
 	then
 		confirm "Would you like to install supervisord?" "install_supervisord"
 	fi;
@@ -128,10 +134,10 @@ check_supervisord () {
 concat_beet_config () {
 	SUPERVISOR_D_MAIN_CONF=`cat $SUPERVISOR_CONF_PATH`;
 	
-	echo "$SUPERVISOR_D_MAIN_CONF 
+	echo "$SUPERVISOR_D_MAIN_CONF
 	
 [include]
-files = $SUPERVISOR_D_CONF_DIR" > $SUPERVISOR_CONF_PATH;
+files = $SUPERVISOR_D_CONF_DIR/*.conf" > $SUPERVISOR_CONF_PATH;
 	
 	
 }
@@ -150,7 +156,34 @@ check_upstart () {
 	confirm "Would you like to add the supervisord upstart script to /etc/init.d?" "add_upstart"
 }
 
+read_password () {
+	stty -echo; read $1; stty echo; echo "";#line break
+}
+
+replace () {
+	TMP_NAM=/tmp/$RANDOM
+	cp $2 $TMP_NAM
+	sed $1 $2 > $TMP_NAM
+	cat $TMP_NAM > $2; 
+}
+
+enter_credits () {
+	echo "Please enter the *new* supervisord auth credentials";
+	
+	echo -n "username: "; read username;
+	echo -n "password: "; read_password password;
+	 
+	cp $SUPERVISOR_CONF_PATH /tmp/supervisord.conf
+	
+	replace "s/username=[a-z0-9]*/username=$username/g" $SUPERVISOR_CONF_PATH
+	replace "s/password=[a-z0-9]*/password=$password/g" $SUPERVISOR_CONF_PATH
+}
+
+
+
 finish () {
+	
+	cd /etc/;
 	
 	#shutdown - dunno if it's running or not
 	supervisorctl shutdown;

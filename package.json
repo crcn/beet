@@ -1,7 +1,7 @@
 {
     "name":"beet",
     "descriptions": "Supervisord library for node.js",
-    "version": "0.0.1",
+    "version": "0.0.8",
     "author": "Craig Condon <craig@spiceapps.com>",
     "bin": {
         "beet": "./bin/beet"
@@ -12,9 +12,12 @@
     },
     "main": "./lib/index.js",
     "dependencies": {
+        "sk":"*",
         "express":"*",
         "vine":"*",
         "structr":"*",
+        "gumbo":"*",
+        "supervisord:"*"
         
     },
     "scripts" :{

@@ -1,0 +1,8 @@
+CONF_PATH="`pwd`/supervisord.conf"
+USER="u";
+PASS="p";
+
+
+
+sed "s/username=[a-z]*/username=$USER/g" $CONF_PATH;
+#sed 's/{{PASS}}/$PASS/g' $CONF_PATH;
