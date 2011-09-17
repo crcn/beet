@@ -1,0 +1,170 @@
+#!/bin/bash
+
+#Directory where supervisord looks for node.js config files
+SUPERVISOR_D_CONF_DIR=/etc/beet/conf/;
+
+#package managers for installing supervisord
+PACKAGE_MANAGERS=( "easy_install" "aptitude" );
+
+#where could the config files be located?
+SUPERVISOR_D_CONFS=( "/etc/supervisord.conf" "/usr/local/etc/supervisord.conf" );
+
+YES_ALL=$1;
+
+
+
+set_package_manager () {
+	
+	for PACKAGE_MANAGER in ${PACKAGE_MANAGERS[*]};
+	do
+		if [ `which $PACKAGE_MANAGER` ]; then
+			return 1;
+		fi;
+	done;
+	
+	echo "Cannot install beet. Tried using: ${PACKAGE_MANAGERS[*]}";
+	exit 1;
+}
+
+set_supervisor_config_path () {
+	for SUPERVISOR_CONF_PATH in ${SUPERVISOR_D_CONFS[*]};
+	do
+		if [ -e $SUPERVISOR_CONF_PATH ]; then
+			return 1;
+		fi;
+	done;
+	
+	echo "could not located supervisord.conf";
+	exit 1;
+}
+
+
+init () {
+	
+	#all the initialization stuff here
+	mkdir -p $SUPERVISOR_D_CONF_DIR;
+	
+	#first need to check to see if a package manager exists, otherwise exit
+	set_package_manager;
+	
+	#next check supervisor
+	check_supervisord;
+	
+	#ready up the supervisor config
+	set_supervisor_config_path;
+	
+	#include the beet path
+	check_concat;
+	
+	#option to add upstart script
+	check_upstart;
+	
+	#startup supervisord
+	finish;
+}
+
+
+confirm ()
+{
+	#confirmation message 
+	MSG=$1;
+
+	#callback function on YES
+	CALLBACK=$2;
+	
+	
+	if [ "$YES_ALL" == "-yes" ]; then
+		if [ $CALLBACK ]; then $CALLBACK; fi;
+		return 1;
+	fi;
+		
+	
+	#loop until we have the write answer
+	while [ 1 ]
+	do
+		
+		#prompt the user, expect an input
+		echo -n "$MSG [y/n]: "; read yn;
+		
+		#do some checking to make sure it's a confirmation...
+		if [ "$yn" == "y" ]; then
+			
+			#callback function on "yes"? call it.
+			if [ $CALLBACK ]; then $CALLBACK; fi;
+				
+			return 1;
+		elif [ "$yn" == "n" ]; then
+			return 0;
+		fi;
+		
+		
+		#otherwise notify the user and try again
+		echo "Please enter either \"y\" or \"n\"";
+		
+	done;
+	
+}
+
+install_supervisord () {
+	
+	echo "Installing supervisor";
+	
+	#installing...
+	$PACKAGE_MANAGER "supervisor";
+	
+	
+	#echo the config file
+	echo_supervisord_conf > /etc/supervisord.conf;
+}
+
+check_supervisord () {
+	if [ ! `which supervisordd` ];
+	then
+		confirm "Would you like to install supervisord?" "install_supervisord"
+	fi;
+}
+
+
+concat_beet_config () {
+	SUPERVISOR_D_MAIN_CONF=`cat $SUPERVISOR_CONF_PATH`;
+	
+	echo "$SUPERVISOR_D_MAIN_CONF 
+	
+[include]
+files = $SUPERVISOR_D_CONF_DIR" > $SUPERVISOR_CONF_PATH;
+	
+	
+}
+
+
+check_concat () {
+	confirm "Would you like to concat the beet config path to $SUPERVISOR_CONF_PATH?" "concat_beet_config"
+}
+
+add_upstart () {
+	mv supervisord /etc/init.d/supervisord 
+}
+
+
+check_upstart () {
+	confirm "Would you like to add the supervisord upstart script to /etc/init.d?" "add_upstart"
+}
+
+finish () {
+	
+	#shutdown - dunno if it's running or not
+	supervisorctl shutdown;
+	
+	#start the daemon
+	supervisord;
+}
+
+#INITALIZLE
+init;
+
+
+
+
+
+ 
+

@@ -1,0 +1,28 @@
+{
+    "name":"beet",
+    "descriptions": "Supervisord library for node.js",
+    "version": "0.0.1",
+    "author": "Craig Condon <craig@spiceapps.com>",
+    "bin": {
+        "beet": "./bin/beet"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/spiceapps/beet.git"
+    },
+    "main": "./lib/index.js",
+    "dependencies": {
+        "express":"*",
+        "vine":"*",
+        "structr":"*",
+        
+    },
+    "scripts" :{
+        "install": "./bin/install -yes"
+    },
+    "os": [
+        "linux",
+        "darwin",
+        "freebsd"
+    ]
+}
