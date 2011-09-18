@@ -18,7 +18,8 @@
         "structr":"*",
         "gumbo":"*",
         "supervisord":"*",
-        "ini":"*"
+        "ini":"*",
+        "node-fs":"*"
         
     },
     "scripts" :{
