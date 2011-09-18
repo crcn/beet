@@ -21,5 +21,4 @@ beet.group('hello').add({ script: __dirname + '/script.js', name: 'my script' },
 });
 
 
-
 ```

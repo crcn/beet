@@ -1,2 +1,10 @@
-#!/usr/bin/env node
-console.log("GO");
+#!/bin/bash
+
+for i in ${*}; do
+	case ${i} in
+	"-i"|"--install")
+		./install
+		;;
+	esac 
+done;
+

@@ -11,8 +11,7 @@ PACKAGE_MANAGERS=( "easy_install" "aptitude" );
 #where could the config files be located?
 SUPERVISOR_D_CONFS=( "/etc/supervisord.conf" "/usr/local/etc/supervisord.conf" );
 
-YES_ALL=$1;
-
+INSTALL_OP=$1;
 
 
 set_package_manager () {
@@ -60,7 +59,7 @@ init () {
 	check_concat;
 	
 	#enter supervisord credentials
-	enter_credits;
+	confirm_credits;
 	
 	#option to add upstart script
 	check_upstart;
@@ -79,8 +78,10 @@ confirm ()
 	CALLBACK=$2;
 	
 	
-	if [ "$YES_ALL" == "-yes" ]; then
+	if [ "$INSTALL_OP" == "-yes" ]; then
 		if [ $CALLBACK ]; then $CALLBACK; fi;
+		return 1;
+	elif [ "$INSTALL_OP" == "-no" ]; then
 		return 1;
 	fi;
 		
@@ -148,7 +149,7 @@ check_concat () {
 }
 
 add_upstart () {
-	mv supervisord /etc/init.d/supervisord 
+	sudo mv supervisord /etc/init.d/supervisord 
 }
 
 
@@ -168,28 +169,34 @@ replace () {
 }
 
 enter_credits () {
-	echo "Please enter the *new* supervisord auth credentials";
-	
 	echo -n "username: "; read username;
 	echo -n "password: "; read_password password;
 	 
-	cp $SUPERVISOR_CONF_PATH /tmp/supervisord.conf
+	sudo cp $SUPERVISOR_CONF_PATH /tmp/supervisord.conf
 	
 	replace "s/username=[a-z0-9]*/username=$username/g" $SUPERVISOR_CONF_PATH
 	replace "s/password=[a-z0-9]*/password=$password/g" $SUPERVISOR_CONF_PATH
 }
 
 
+confirm_credits () {
+	confirm "Would you like to set *new* credentials for supervisord?" "add_upstart";
+}
+
 
 finish () {
-	
+
+	if [ "$INSTALL_OP" == "-no" ]; then return 0; fi;
+
 	cd /etc/;
+
+	echo "Restarting supervisord";
 	
 	#shutdown - dunno if it's running or not
-	supervisorctl shutdown;
-	
+	sudo supervisorctl shutdown;
+
 	#start the daemon
-	supervisord;
+	sudo supervisord;
 }
 
 #INITALIZLE
