@@ -11,9 +11,7 @@ An extension to the node.js [supervisord](https://github.com/spiceapps/superviso
 
 #### Installation
 
-	npm install beet -g
-
-	beet --install
+	npm install beet -g && beet --install
 
 #### Example
 
