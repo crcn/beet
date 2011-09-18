@@ -22,7 +22,7 @@
         
     },
     "scripts" :{
-        "install": "./bin/install -yes"
+        "install": "./bin/install -no"
     },
     "os": [
         "linux",

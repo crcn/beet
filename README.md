@@ -1,4 +1,4 @@
-An extension to the node.js [supervisord](https://github.com/spiceapps/supervisord) with some additional candy.
+An extension to the node.js [supervisord](https://github.com/spiceapps/supervisord) library with some additional candy.
 
 #### Features
 
@@ -7,6 +7,13 @@ An extension to the node.js [supervisord](https://github.com/spiceapps/superviso
 
 - Ability to add processes to supervisord by group.
 - Reads supervisord.conf file for authentication / port.
+
+
+#### Installation
+
+	npm install beet -g
+
+	beet --install
 
 #### Example
 
