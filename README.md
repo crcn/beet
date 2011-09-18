@@ -15,7 +15,7 @@ An extension to the node.js [supervisord](https://github.com/spiceapps/superviso
 var beet = require('beet');
 
 
-beet.group('hello').add({ script: __dirname + '/script.js', name: 'my script', args: ['some','cli','arguments'] }, function(err, result)
+beet.group('hello').add({ script: __dirname + '/script.js', name: 'my script' }, function(err, result)
 {
 	//started!
 });
