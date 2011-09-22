@@ -9,6 +9,18 @@ An extension to the node.js [supervisord](https://github.com/spiceapps/superviso
 - Reads supervisord.conf file for authentication / port.
 
 
+#### To Do
+
+- addEventListener for processes. E.g: 
+
+```javascript
+
+	beet.group('hello').addEventListener('myApp:PROCESS_STATE_FATAL', {
+		command: 'node /path/to/email -email=me@email.com'
+	});
+```
+
+
 #### Installation
 
 	npm install beet -g && beet --install
