@@ -1,1 +1,50 @@
 #!/usr/bin/env node
+
+var celeri = require('celeri'),
+beet = require('../');
+
+
+celeri.on({
+	
+	/**
+	 */
+	
+	'add :name :command': function(data)
+	{
+		var command = decodeURIComponent(data.command),
+		name = data.name;
+		
+		console.log("ADD %s", command);
+		
+		beet.group().add({ command: command, name: name }, function(err, response)
+		{
+			//console.log(err || response);
+		});
+		
+		beet.addListener('reloaded', function()
+		{
+			process.exit(0);
+		})
+	},
+	
+	/**
+	 */
+	
+	'remove :name': function(data)
+	{ 
+		console.log('Removing %s', data.name);
+		
+		beet.group().remove( data.name, function()
+		{
+		
+		});
+		
+		beet.addListener('reloaded', function()
+		{
+			process.exit(0);
+		})
+	}
+});
+
+
+celeri.parse(process.argv);
