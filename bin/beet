@@ -1,10 +1,1 @@
-#!/bin/bash
-
-for i in ${*}; do
-	case ${i} in
-	"-i"|"--install")
-		./install
-		;;
-	esac 
-done;
-
+#!/usr/bin/env node
