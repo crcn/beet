@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var celeri = require('celeri'),
-beet = require('../');
+beet = require('../lib');
 
 
 celeri.on({
@@ -16,15 +16,16 @@ celeri.on({
 		
 		console.log("ADD %s", command);
 		
-		beet.group().add({ command: command, name: name }, function(err, response)
+		try
+		{
+		beet.scripts.addProgram({ command: command, name: name }, function(err, response)
 		{
 			//console.log(err || response);
 		});
-		
-		beet.addListener('reloaded', function()
+		}catch(e)
 		{
-			process.exit(0);
-		})
+			console.log(e.stack)
+		}
 	},
 	
 	/**
@@ -34,15 +35,10 @@ celeri.on({
 	{ 
 		console.log('Removing %s', data.name);
 		
-		beet.group().remove( data.name, function()
+		beet.scripts.removeProgram(data.name, function()
 		{
 		
 		});
-		
-		beet.addListener('reloaded', function()
-		{
-			process.exit(0);
-		})
 	}
 });
 

@@ -56,7 +56,7 @@ init () {
 	set_supervisor_config_path;
 	
 	#include the beet path
-	check_concat;
+	#check_concat;
 	
 	#enter supervisord credentials
 	confirm_credits;

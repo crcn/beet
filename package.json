@@ -17,12 +17,13 @@
         "express":"*",
         "vine":"*",
         "structr":"*",
-        "gumbo":"*",
         "supervisord":"*",
         "ini":"*",
         "node-fs":"*",
-        "celeri":"*"
-        
+        "celeri":"*",
+        "cashew":"*",
+        "underscore": "*",
+        "yaconfig":"*"        
     },
     "scripts" :{
         "install": "./bin/install -no"
