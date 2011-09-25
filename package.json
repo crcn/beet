@@ -13,17 +13,13 @@
     },
     "main": "./lib/index.js",
     "dependencies": {
-        "sk":"*",
-        "express":"*",
-        "vine":"*",
         "structr":"*",
         "supervisord":"*",
         "ini":"*",
         "node-fs":"*",
         "celeri":"*",
-        "cashew":"*",
         "underscore": "*",
-        "yaconfig":"*"        
+        "yaconfig":"*"
     },
     "scripts" :{
         "install": "./bin/install -no"
