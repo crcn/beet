@@ -1,9 +1,11 @@
 #!/bin/bash
 
 #Directory where supervisord looks for node.js config files
+DIR="$( cd -P "$( dirname `readlink -f $0` )" && pwd )";
 SUPERVISOR_D_CONF_DIR=/etc/beet/conf;
 BEET_LOG_DIR=/var/log/beet;
-TEMPLATE_PATH="`pwd`/supervisord.conf"
+TEMPLATE_PATH="$DIR/supervisord.conf"
+    
 
 #package managers for installing supervisord
 PACKAGE_MANAGERS=( "port" "aptitude" );
@@ -11,7 +13,8 @@ PACKAGE_MANAGERS=( "port" "aptitude" );
 #where could the config files be located?
 SUPERVISOR_D_CONFS=( "/etc/supervisord.conf" "/usr/local/etc/supervisord.conf" );
 
-INSTALL_OP=$1;
+INSTALL_OP=$1;     
+
 
 
 set_package_manager () {
@@ -47,16 +50,15 @@ init () {
 	
 	
 	#first need to check to see if a package manager exists, otherwise exit
-	set_package_manager;
+	set_package_manager;    
+	                        
 	
 	#next check supervisor
 	check_supervisord;
 	
 	#ready up the supervisor config
 	set_supervisor_config_path;
-	
-	#include the beet path
-	#check_concat;
+	                           
 	
 	#enter supervisord credentials
 	confirm_credits;
@@ -114,7 +116,15 @@ confirm ()
 
 install_supervisord () {
 	
-	echo "Installing supervisor";
+	echo "Installing supervisor";  
+	
+	if [ ! `which easy_install `];
+	then
+		sudo apt-get install python-setuptools -y;          
+		
+		#fix issue with ubuntu
+		sudo easy_install elementtree;    
+	fi;
 	
 	#installing...
 	$PACKAGE_MANAGER install "supervisor";
@@ -122,30 +132,15 @@ install_supervisord () {
 	``
 	#echo the config file
 	cat $TEMPLATE_PATH > /etc/supervisord.conf;
-}
+}     
+
+
 
 check_supervisord () {
 	if [ ! `which supervisord` ];
 	then
 		confirm "Would you like to install supervisord?" "install_supervisord"
 	fi;
-}
-
-
-concat_beet_config () {
-	SUPERVISOR_D_MAIN_CONF=`cat $SUPERVISOR_CONF_PATH`;
-	
-	echo "$SUPERVISOR_D_MAIN_CONF
-	
-[include]
-files = $SUPERVISOR_D_CONF_DIR/*.conf" > $SUPERVISOR_CONF_PATH;
-	
-	
-}
-
-
-check_concat () {
-	confirm "Would you like to concat the beet config path to $SUPERVISOR_CONF_PATH?" "concat_beet_config"
 }
 
 add_upstart () {
