@@ -12,7 +12,7 @@ An extension to the node.js [supervisord](https://github.com/spiceapps/superviso
                                      
 ### Notes
                                 
-- Beet modifies only one setting in supervisord.conf, which is `[includes]`. Beet adds a directory to scan which is `/etc/beet/enabled/*.conf`. Any configuration files
+- Beet modifies only one setting in supervisord.conf, which is `[include]`. Beet adds a directory to scan which is `/etc/beet/enabled/*.conf`. Any configuration files
 Are symlinked to this directory. 
 - After modifications to supervisord, beet calls `supervisorctl update` to load / unload any changes, versus restarting supervisord.        
 
