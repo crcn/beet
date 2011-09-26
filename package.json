@@ -1,7 +1,7 @@
 {
     "name":"beet",
     "descriptions": "Supervisord library for node.js",
-    "version": "0.1.8",
+    "version": "0.1.10",
     "author": "Craig Condon <craig@spiceapps.com>",
     "bin": {
         "beet-install": "./bin/install",
@@ -20,9 +20,6 @@
         "celeri":"*",
         "underscore": "*",
         "yaconfig":"*"
-    },
-    "scripts" :{
-        "install": "./bin/install -no"
     },
     "os": [
         "linux",

@@ -6,7 +6,7 @@ BEET_LOG_DIR=/var/log/beet;
 TEMPLATE_PATH="`pwd`/supervisord.conf"
 
 #package managers for installing supervisord
-PACKAGE_MANAGERS=( "easy_install" "aptitude" );
+PACKAGE_MANAGERS=( "port" "aptitude" );
 
 #where could the config files be located?
 SUPERVISOR_D_CONFS=( "/etc/supervisord.conf" "/usr/local/etc/supervisord.conf" );
@@ -117,7 +117,7 @@ install_supervisord () {
 	echo "Installing supervisor";
 	
 	#installing...
-	$PACKAGE_MANAGER "supervisor";
+	$PACKAGE_MANAGER install "supervisor";
 	
 	``
 	#echo the config file
