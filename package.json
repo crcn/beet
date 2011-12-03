@@ -1,7 +1,7 @@
 {
     "name": "beet",
     "descriptions": "Supervisord library for node.js",
-    "version": "0.1.13",
+    "version": "0.1.14",
     "author": "Craig Condon <craig@crcn.com>",
     "bin": {
         "beet-install": "./bin/install",
@@ -19,7 +19,7 @@
         "ini": "1.0.1",
         "node-fs": "0.1.0",
         "celeri": "0.1.3",
-        "optimist":"0.2.8",
+        "optimist": "*",
         "underscore": "1.2.2",
         "yaconfig": "0.0.2"
     },

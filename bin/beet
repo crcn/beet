@@ -3,11 +3,20 @@
 var celeri = require('celeri'),
 beet = require('../lib');
 
+var argv = process.argv.concat();
+
+
+
+/*program.option('-a, --add [name] [command]', 'add a process').
+option('-r, --remove [name]','remove a process').
+parse(process.argv);
+
+console.log(program)
+*/
+
 
 celeri.on({
 	
-	/**
-	 */
 	
 	'add :name :command': function(data)
 	{
@@ -28,8 +37,6 @@ celeri.on({
 		}
 	},
 	
-	/**
-	 */
 	
 	'remove :name': function(data)
 	{ 
@@ -43,4 +50,7 @@ celeri.on({
 });
 
 
-celeri.parse(process.argv);
+var argv = process.argv.slice(2);
+
+celeri.parse(['',''].concat(argv.join(':')));
+
