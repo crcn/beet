@@ -23,7 +23,7 @@ celeri.on({
 		var command = decodeURIComponent(data.command),
 		name = data.name;
 		
-		console.log("ADD %s", command);
+		console.log("Adding %s", command);
 		
 		try
 		{
