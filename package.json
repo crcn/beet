@@ -1,11 +1,11 @@
 {
-    "name":"beet",
+    "name": "beet",
     "descriptions": "Supervisord library for node.js",
-    "version": "0.1.12",
+    "version": "0.1.13",
     "author": "Craig Condon <craig@crcn.com>",
     "bin": {
         "beet-install": "./bin/install",
-        "beet":"./bin/beet"
+        "beet": "./bin/beet"
     },
     "repository": {
         "type": "git",
@@ -13,14 +13,14 @@
     },
     "main": "./lib/index.js",
     "dependencies": {
-        "sk":"*",
-        "structr":"*",
-        "supervisord":"*",
-        "ini":"*",
-        "node-fs":"*",
-        "celeri":"*",
+        "sk": "*",
+        "structr": "*",
+        "supervisord": "*",
+        "ini": "*",
+        "node-fs": "*",
+        "celeri": "*",
         "underscore": "*",
-        "yaconfig":"*"
+        "yaconfig": "*"
     },
     "os": [
         "linux",
