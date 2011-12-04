@@ -15,7 +15,7 @@ console.log(program)
 */
 
 
-celeri.on({
+celeri.onCommand({
 	
 	
 	'add :name :command': function(data)
