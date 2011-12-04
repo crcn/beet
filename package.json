@@ -18,7 +18,7 @@
         "supervisord": "0.0.3",
         "ini": "1.0.1",
         "node-fs": "0.1.0",
-        "celeri": "0.1.3",
+        "celeri": "0.2.0",
         "optimist": "*",
         "underscore": "1.2.2",
         "yaconfig": "0.0.2"
