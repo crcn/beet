@@ -27,7 +27,15 @@
 			"file": "lib/index.js",
 			"settings":
 			{
-				"buffer_size": 4874,
+				"buffer_size": 5503,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/tmp/subl stdin 9PixW5.txt",
+			"settings":
+			{
+				"buffer_size": 0,
 				"line_ending": "Unix"
 			}
 		},
@@ -51,7 +59,7 @@
 			"file": "package.json",
 			"settings":
 			{
-				"buffer_size": 714,
+				"buffer_size": 715,
 				"line_ending": "Unix"
 			}
 		},
@@ -59,7 +67,7 @@
 			"file": "bin/beet",
 			"settings":
 			{
-				"buffer_size": 876,
+				"buffer_size": 883,
 				"line_ending": "Unix"
 			}
 		}
@@ -107,6 +115,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"EventEmitter",
+			"update",
 			"enable",
 			"nodefs",
 			"onEnd",
@@ -140,7 +150,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 7,
 			"sheets":
 			[
 				{
@@ -200,43 +210,15 @@
 					"file": "lib/index.js",
 					"settings":
 					{
-						"buffer_size": 4874,
+						"buffer_size": 5503,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2727,
-								2727
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1453.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "lib/group.js",
-					"settings":
-					{
-						"buffer_size": 6386,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								294,
-								296
+								647,
+								649
 							]
 						],
 						"settings":
@@ -252,7 +234,61 @@
 					"type": "text"
 				},
 				{
+					"buffer": 3,
+					"file": "/tmp/subl stdin 9PixW5.txt",
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
 					"buffer": 4,
+					"file": "lib/group.js",
+					"settings":
+					{
+						"buffer_size": 6386,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4115,
+								4115
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2867.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
 					"file": "lib/models/configuration.js",
 					"settings":
 					{
@@ -263,8 +299,8 @@
 						"selection":
 						[
 							[
-								2327,
-								2333
+								2100,
+								2106
 							]
 						],
 						"settings":
@@ -273,25 +309,25 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1659.0,
+						"translation.y": 154.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 6,
 					"file": "package.json",
 					"settings":
 					{
-						"buffer_size": 714,
+						"buffer_size": 715,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								573,
-								573
+								0,
+								0
 							]
 						],
 						"settings":
@@ -307,19 +343,19 @@
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 7,
 					"file": "bin/beet",
 					"settings":
 					{
-						"buffer_size": 876,
+						"buffer_size": 883,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								449,
-								449
+								300,
+								300
 							]
 						],
 						"settings":
@@ -328,7 +364,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 39.0,
+						"translation.y": 55.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

@@ -1,31 +1,31 @@
 {
-    "name": "beet",
-    "descriptions": "Supervisord library for node.js",
-    "version": "0.1.14",
-    "author": "Craig Condon <craig@crcn.com>",
-    "bin": {
-        "beet-install": "./bin/install",
-        "beet": "./bin/beet"
-    },
-    "repository": {
-        "type": "git",
-        "url": "http://github.com/crcn/beet.git"
-    },
-    "main": "./lib/index.js",
-    "dependencies": {
-        "sk": "0.0.8",
-        "structr": "0.1.0",
-        "supervisord": "0.0.3",
-        "ini": "1.0.1",
-        "node-fs": "0.1.0",
-        "celeri": "0.2.0",
-        "optimist": "*",
-        "underscore": "1.2.2",
-        "yaconfig": "0.0.2"
-    },
-    "os": [
-        "linux",
-        "darwin",
-        "freebsd"
-    ]
+  "name": "beet",
+  "descriptions": "Supervisord library for node.js",
+  "version": "0.1.14",
+  "author": "Craig Condon <craig@crcn.com>",
+  "bin": {
+    "beet-install": "./bin/install",
+    "beet": "./bin/beet"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/crcn/beet.git"
+  },
+  "main": "./lib/index.js",
+  "dependencies": {
+    "sk": "0.0.8",
+    "structr": "0.1.0",
+    "supervisord": "0.0.3",
+    "ini": "1.0.1",
+    "node-fs": "0.1.0",
+    "celeri": "0.2.0",
+    "optimist": "*",
+    "underscore": "1.2.2",
+    "yaconfig": "0.0.2"
+  },
+  "os": [
+    "linux",
+    "darwin",
+    "freebsd"
+  ]
 }
