@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/crcn/beet.png)](http://travis-ci.org/crcn/beet)
 An extension to the node.js [supervisord](https://github.com/spiceapps/supervisord) library with some additional candy. 
 
 #### Features
